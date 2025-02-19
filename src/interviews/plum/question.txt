@@ -1,0 +1,26 @@
+Spreadsheet:
+
+You have a spreadsheet with maximum of 26 rows and maximum 9 columns. The rows
+are labeled A-Z and the columns are numbered 1-9. Each cell is identified by its row
+label followed by its column number.
+
+Spreadsheet 1 2 3 4
+A 9 A1 + C2 / D3 5 B4
+B 4 -10 A3 + D3 6
+C -23 2 9 A1 * B2
+D A4 0 -10 B3
+Each cell in the spreadsheet either has a value (a decimal number), or a formula which
+can be used to
+compute its value. The formula is an expression with the four standard binary operators
+(+, -, *, /), and
+operands as either decimal numbers, or other cell identifiers.
+Please implement the following in a programming language of
+your choice
+ClassName:
+Spreadsheet
+Constructor:
+- Spreadsheet(String[][] spreadsheetCells) : Creates a Spreadsheet where
+spreadsheetCells[i][j] is the initial expression/value specifying the contents of the cell in
+the ith row and jth column.
+Methods:
+- double getValue(string cell): Returns the decimal value of the corresponding cell.
