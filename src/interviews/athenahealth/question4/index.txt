@@ -1,0 +1,7 @@
+// Question 4
+
+s3://transaction-logs-bucket/<region>/<environment>/<year>/<month>/<day>/
+
+An org is using AWS Glue for ETL, it stores logs from all regions, envs, and for all dates in it's S3.
+What optimisation should be done to store only data from 'prod' environment for a specific region for the current date.
+

@@ -1,0 +1,24 @@
+{
+  "name": "dsa",
+  "version": "1.0.0",
+  "description": "A repo filled with all sorts of datastructures, algorithms and practice questions. Intended to be used as a recap for interview prep.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "./node_modules/.bin/tsc -p .",
+    "gen-dts": "dts-bundle-generator -o dist/index.d.ts src/datastructures/typescript/main.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AvichalGupta/dsa.git"
+  },
+  "author": "Avichal Gupta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AvichalGupta/dsa/issues"
+  },
+  "homepage": "https://github.com/AvichalGupta/dsa#readme",
+  "devDependencies": {
+    "dts-bundle-generator": "^9.5.1"
+  }
+}
