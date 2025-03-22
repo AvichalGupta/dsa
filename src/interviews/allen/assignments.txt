@@ -1,0 +1,6 @@
+Requirements:
+
+Build a vaccination booking system in golang
+
+Solution:
+https://github.com/AvichalGupta/Vaccination-System-GoLang/tree/main/src
