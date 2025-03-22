@@ -1,0 +1,11 @@
+Requirements: 
+
+https://www.linkedin.com/safety/go?url=https%3A%2F%2Fcloudfiles.notion.site%2FAssignment-Backend-Meeting-Room-Booking-API-1aec47549b7580d39d02d99634b1173a&trk=flagship-messaging-web&messageThreadUrn=urn%3Ali%3AmessagingThread%3A2-ZjMwNTA5YmMtYzdhNS00Y2QxLWFiNGQtMjZkMmUxZjUxNjJlXzEwMA%3D%3D&lipi=urn%3Ali%3Apage%3Ad_flagship3_feed%3B6QflfhNvQzaPcSfwdQQ3MA%3D%3D
+
+TL;DR:
+
+Build a meeting booking service.
+
+Solution: 
+Github URL: https://github.com/AvichalGupta/CloudFilesAssignment/tree/main
+Postman URL: https://elements.getpostman.com/redirect?entityId=9020780-9f9547f1-e95e-4062-8bbd-a769336b44c8&entityType=collection
