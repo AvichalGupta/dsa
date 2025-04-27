@@ -51,7 +51,7 @@ function generatePascalTriangle(input) {
     }
 
     for (let i = 2; i < input; i++) {
-        for (let j = 1; j < output[i].length - 1 ; j++) {
+        for (let j = 1; j < output[i].length - 1; j++) {
             output[i][j] = output[i - 1][j - 1] + output[i - 1][j];
         }
     }
@@ -83,7 +83,7 @@ function getElementFromPascalTriangle(row, col) {
             return -1;
         }
     
-        function recurse(num) {
+        function factorial(num) {
             if (num <= 1) {
                 return 1;
             }
@@ -93,7 +93,7 @@ function getElementFromPascalTriangle(row, col) {
     
         function nCr(n, r) {
             // nCr = n! / ( r! * (n - r)! );
-            return (recurse(n) / (recurse(r) * recurse(n-r)));
+            return (factorial(n) / (factorial(r) * factorial(n-r)));
         }
     
         return nCr(row - 1, col - 1);
@@ -192,45 +192,85 @@ function getRowFromPascalTriangle(row) {
 // Time Complexity: O(n)
 // Space Complexity: O(1)
 function getNextPermutationLexographically(inputArr) {
-    let breakPoint = null;
-    for (let index = inputArr.length - 1; index > 0; index --) {
-        if (inputArr[index] > inputArr[index - 1]) {
-            breakPoint = index - 1;
-            break;
+    function solution1() {
+
+        let breakPoint = null;
+        for (let index = inputArr.length - 1; index > 0; index --) {
+            if (inputArr[index] > inputArr[index - 1]) {
+                breakPoint = index - 1;
+                break;
+            }
         }
-    }
-
-    if (breakPoint === null) {
-        return inputArr.reverse();
-    }
-
-    let smallestVal = inputArr[breakPoint + 1];
-    let smallestValIndex = breakPoint + 1;
-    for (let index = breakPoint + 1; index < inputArr.length; index++) {
-        if (inputArr[index] < smallestVal && inputArr[index] > inputArr[breakPoint]) {
-            smallestVal = inputArr[index];
-            smallestValIndex = index;
+    
+        if (breakPoint === null) {
+            // This means array is in last permutation.
+            // Example: inputArr = [3, 2, 1] (breakPoint will be null), reversing array will give next lexographic order.
+            return inputArr.reverse();
         }
+    
+        let smallestVal = inputArr[breakPoint + 1];
+        let smallestValIndex = breakPoint + 1;
+        for (let index = breakPoint + 1; index < inputArr.length; index++) {
+            if (inputArr[index] < smallestVal && inputArr[index] > inputArr[breakPoint]) {
+                smallestVal = inputArr[index];
+                smallestValIndex = index;
+            }
+        }
+    
+        // smallestVal is the smallest value just bigger than the breakPoint value, it will never be null after the loop.
+    
+        inputArr[smallestValIndex] += inputArr[breakPoint];
+        inputArr[breakPoint] = inputArr[smallestValIndex] - inputArr[breakPoint];
+        inputArr[smallestValIndex] -= inputArr[breakPoint];
+    
+        // Approach 1: using single for loop, on additional variables. 
+        let lastIndex = -1;
+        for (let i = breakPoint + 1; i < (inputArr + breakPoint + 1) / 2; i++) {
+            lastIndex = inputArr.length - 1 - (index - (breakPoint + 1));
+            inputArr[lastIndex] += inputArr[index];
+            inputArr[index] = inputArr[lastIndex] - inputArr[index];
+            inputArr[lastIndex] -= inputArr[index];
+        }
+    
+        return inputArr;
     }
 
-    // smallestVal is the smallest value just bigger than the breakPoint value, it will never be null after the loop.
+    function solution2() {
+        let n = inputArr.length; // size of the array.
 
-    inputArr[smallestValIndex] += inputArr[breakPoint];
-    inputArr[breakPoint] = inputArr[smallestValIndex] - inputArr[breakPoint];
-    inputArr[smallestValIndex] -= inputArr[breakPoint];
+        // Step 1: Find the break point:
+        let index = -1; // break point
+        for (let i = n - 2; i >= 0; i--) {
+            if (inputArr[i] < inputArr[i + 1]) {
+                // index i is the break point
+                index = i;
+                break;
+            }
+        }
 
-    // Approach 1: using single for loop, on additional variables. 
-    let lastIndex = -1;
-    for (let i = breakPoint + 1; i < (inputArr + breakPoint + 1) / 2; i++) {
-        lastIndex = inputArr.length - 1 - (index - (breakPoint + 1));
-        inputArr[lastIndex] += inputArr[index];
-        inputArr[index] = inputArr[lastIndex] - inputArr[index];
-        inputArr[lastIndex] -= inputArr[index];
+        // If break point does not exist:
+        if (index == -1) {
+            // reverse the whole array:
+            inputArr.reverse();
+            return inputArr;
+        }
+
+        // Step 2: Find the next greater element and swap it with A[ind]
+
+        for (let i = n - 1; i > index; i--) {
+            if (inputArr[i] > inputArr[index]) {
+                [inputArr[i], inputArr[index]] = [inputArr[index], inputArr[i]]; // swap A[i] and A[ind]
+                break;
+            }
+        }
+
+        // Step 3: reverse the right half:
+        inputArr.splice(index + 1, n - index - 1, ...inputArr.slice(index + 1).reverse());
+
+        return inputArr;
     }
 
-    // Approach 2: use 2 pointers, one moving forward other moving back, keep swapping values. forward = breakPoint + 1; backward = inputArr.length - 1;
-
-    return inputArr;
+    return solution2();
 }
 
 // (() => {
@@ -573,46 +613,186 @@ function findMajorityElementX(inputArr, X) {
 // })()
 
 // Grid unique paths, find all unique paths in a matrix from point A to point B while moving down and right only.
-// Time Complexity: O(n)
-// Space Complexity: O(1)
-function findAllUniquePaths(inputMatrix, startPoint, endPoint) {
-    function isRowBoundaryValue(rowIndex) {
-        return (rowIndex === endPoint[0]);
-    }
+function findAllUniquePaths(rowLen, colLen) {
 
-    function isColumnBoundaryValue(colIndex) {
-        return (colIndex === endPoint[1]);
-    }
+    // Time Complexity: O(n)
+    // Space Complexity: O(1)
+    function solution1() {
+        // brute force recursion - This approach perfroms 2 operations at every square (go right and go down), it will re-visit already visited squares.
+        function recurse(rowVal = 0, colVal = 0) {
+            if (rowVal === rowLen && colVal === colLen) return 1;
+            if (rowVal > rowLen || colVal > colLen) return 0;
 
-    function verifyBounds() {
-        if ((startPoint[0] > inputMatrix.length) || (startPoint[0] < 0)) throw new Error('Start Point row out of bounds.');
-        if ((startPoint[1] > inputMatrix[0].length) || (startPoint[1] < 0)) throw new Error('Start Point col out of bounds.');
-        if ((endPoint[0] > inputMatrix.length) || (endPoint[0] < 0)) throw new Error('End Point row out of bounds.');
-        if ((endPoint[1] > inputMatrix[0].length) || (endPoint[1] < 0)) throw new Error('End Point col out of bounds.');
-        if (startPoint[0] > endPoint[0]) throw new Error('Start Point row must be lesser than end point row.');
-        if (startPoint[1] > endPoint[1]) throw new Error('Start Point column must be lesser than end point column.');
-        if ((startPoint[0] === endPoint[0]) && (startPoint[1] === endPoint[1])) throw new Error('Start and Endpoint cannot be same.');
-    }
+            const goRight = recurse(rowVal, colVal + 1);
+            const goDown = recurse(rowVal + 1, colVal);
 
-    verifyBounds();
-
-    const possiblePaths = new Array();
-    for (let rowIndex = startPoint[0]; rowIndex < endPoint[0]; rowIndex++) {
-
-        for (let colIndex = startPoint[1]; colIndex < endPoint[1]; colIndex++) {
+            return goRight + goDown;
         }
+
+        return recurse();
     }
+
+    // Time Complexity: O(m * n)
+    // Space Complexity: O((m + 1) * (n + 1))
+    function solution2() {
+        // memoised format of recursion - This approach perfroms 2 operations at every square (go right and go down), 
+        // it will cache visited squares and does not perfrom recursion on the re-visited squares. 
+        // It instead returns the value from the cache, 
+        // in this case the value is the number of possible paths till the end from the cached square.
+        const memoisedArr = new Array(rowLen + 1).fill(new Array(colLen + 1).fill(-1));
+
+        function recurse(rowVal = 0, colVal = 0, memoisedArr) {
+            if (rowVal === rowLen && colVal === colLen) return 1;
+            if (rowVal > rowLen || colVal > colLen) return 0;
+
+            if (memo[rowVal][colVal] === -1) {
+                const goRight = recurse(rowVal, colVal + 1, memoisedArr);
+                const goDown = recurse(rowVal + 1, colVal, memoisedArr);
+    
+                memo[rowVal][colVal] = goRight + goDown;
+            }
+
+            return memo[rowVal][colVal];
+        }
+
+        return recurse(0,0,memoisedArr);
+    }
+
+    // Time Complexity: O(m * n)
+    // Space Complexity: O((m + 1) * (n + 1))
+    function solution3() {
+        // Dynamic Programming Approach: Bottom Up Tabular - This approach does not use recursion, insteasd uses memoisation with simple for loops.
+        // More memory efficient as it does not pass the same array in every function call.
+        // Only drawback, each row in this array, stores the same values.
+        const dpArr = new Array(rowLen + 1).fill(new Array(colLen + 1).fill(1));
+
+        dpArr[rowLen][colLen] = 1;
+        for (let rowIndex = rowLen - 1; rowIndex > 0; rowIndex--) {
+            for (let colIndex = colLen - 1; colIndex > 0; colIndex--) {
+                dpArr[rowIndex][colIndex] = dpArr[rowIndex + 1][colIndex] + dpArr[rowIndex][colIndex + 1];
+            }
+        }
+
+        return dpArr[1][1];
+    }
+
+    // Time Complexity: O(m * n)
+    // Space Complexity: O(n + 1)
+    function solution4() {
+        // Dynamic Programming Approach: Bottom Up Tabular - This approach does not use recursion, insteasd uses memoisation with simple for loops.
+        // More memory efficient as it uses a 1-D array.
+        const dpArr = new Array(colLen + 1).fill(1);
+
+        for (let rowIndex = rowLen - 1; rowIndex > 0; rowIndex--) {
+            for (let colIndex = colLen - 1; colIndex > 0; colIndex--) {
+                dpArr[colIndex] += dpArr[colIndex + 1];
+            }
+        }
+
+        return dpArr[1];
+    }
+
+    return solution4();
 }
 
 // (() => {
-//     const input = [1,3,3,3,2,2,2];
-//     const startPoint = [0,1];
-//     const endPoint = [1,2];
+//     const rowLen = 3;
+//     const colLen = 7;
 //     const initMemory = process.memoryUsage().heapUsed;
 //     console.time('Time Taken: ');
-//     const output = findAllUniquePaths(input,startPoint, endPoint);
+//     const output = findAllUniquePaths(rowLen, colLen);
 //     console.timeEnd('Time Taken: ');
 //     const finalMemory = process.memoryUsage().heapUsed;
 //     console.log('\noutput: ', output);
 //     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
 // })()
+
+
+// Tow Sum: Return indices of elements in array that when added give the targetSum.
+function twoSum(arr, targetSum) {
+
+    // Map based approach: Check if complement value exists in array and return indices
+    // Time Complexity: O(n) n = arr.length
+    // Space Complexity: O(n) n = arr.length
+    function solution1() {
+        const complementMap = new Map();
+
+        for (let index = 0; index < arr.length; index++) {
+            const complementVal = targetSum - arr[index];
+            if (complementMap.has(complementVal)) {
+                return [index, complementMap.get(complementVal)];
+            }
+            complementMap.set(complementVal, index);
+        }
+
+        return [-1, -1];
+    }
+}
+
+function maxProduct(nums) {
+    let maxProd = nums[0];
+    let minProd = nums[0];
+    let result = nums[0];
+    
+    for (let i = 1; i < nums.length; i++) {
+      const num = nums[i];
+      if (num < 0) {
+        [maxProd, minProd] = [minProd, maxProd];
+      }
+      console.log('before: ', num, maxProd, minProd, result);
+      maxProd = Math.max(num, maxProd * num);
+      minProd = Math.min(num, minProd * num);
+      result = Math.max(result, maxProd);
+      console.log('after: ', num, maxProd, minProd, result);
+    }
+    
+    console.log('result: ', result);
+}
+
+// maxProduct([5, -2, -3, -31]);
+
+function productExceptSelf(nums) {
+    const n = nums.length;
+    const answer = new Array(n).fill(1);
+    
+    // Compute right products first
+    let right = 1;
+    for (let i = n - 1; i >= 0; i--) {
+      answer[i] = right;
+      right *= nums[i];
+    }
+
+     // Then multiply by left products
+     let left = 1;
+     for (let i = 0; i < n; i++) {
+         answer[i] *= left;
+         left *= nums[i];
+     }
+    
+    console.log(answer);
+}
+
+function productExceptSelf(nums) {
+    const n = nums.length;
+    const answer = new Array(n).fill(1);
+    
+    // Left products
+    let left = 1;
+    for (let i = 0; i < n; i++) {
+      answer[i] = left;
+      left *= nums[i];
+    }
+    
+    // Right products
+    let right = 1;
+    for (let i = n - 1; i >= 0; i--) {
+      answer[i] *= right;
+      right *= nums[i];
+    }
+    
+    console.log(answer);
+} 
+
+productExceptSelf([1,2,3]);
+
+//https://docs.google.com/spreadsheets/d/1LOulbPzt6mM89q_zO3Obp3L_Jb3w6CkHZfYnjmwOpAA/edit?gid=0#gid=0

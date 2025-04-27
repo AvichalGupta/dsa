@@ -14,7 +14,7 @@ class MaxHeap<T> {
 
     public remove(): T {
         if (!this.heap.length) throw new Error('Underflow');
-        //This swap is done, only to be able to remove the pop function, by swapping the element at the index to the last element, pop can now be used.
+        //This swap is done, only to be able to use the pop function, by swapping the element at the index to the last element, pop can now be used.
         this.swap(0, this.heap.length - 1);
         const removedElement = this.heap.pop()!;
         this.bubbleDown();

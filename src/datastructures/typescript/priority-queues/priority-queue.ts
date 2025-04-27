@@ -8,9 +8,7 @@ enum PriorityQueueType {
 class PriorityQueue<T> {
     private heap: MaxHeap<T> | MinHeap<T>;
     constructor(type: PriorityQueueType) {
-        if (type === PriorityQueueType.MIN) {
-            this.heap = new MinHeap<T>();
-        } else if (type === PriorityQueueType.MAX) {
+        if (type === PriorityQueueType.MAX) {
             this.heap = new MaxHeap<T>();
         } else {
             this.heap = new MinHeap<T>();

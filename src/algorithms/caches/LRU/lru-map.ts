@@ -28,7 +28,10 @@ class MapBasedLRUCache<T> {
 
     public set(key: string, value: T, ttl?: number): void {
         if (this.cache.size >= this.maxCapacity) {
-            this.cache.delete(this.cache.keys().next().value);
+            const value = this.cache.keys().next().value;
+            if (value) {
+                this.cache.delete(value);
+            }
         }
         this.cache.set(key, { value, ttl: ttl ?? Number.POSITIVE_INFINITY, startDate: Date.now() });
     }
