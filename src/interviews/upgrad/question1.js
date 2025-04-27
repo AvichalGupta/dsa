@@ -1,1 +1,1 @@
-// Create a leaderboard from a given array.
+// Create a leaderboard from a given array. Use a priority queue
