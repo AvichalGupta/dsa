@@ -3,25 +3,39 @@
 export class Queue<T> {
     private items: Array<T>;
     private maxSize: number;
+    private startIndex: number;
+    private flushSize: number;
 
     constructor(maxSize?: number) {
+        if (maxSize === 0) throw new Error('Cannot initialise queue of size 0');
+        if (maxSize && maxSize > Number.MAX_SAFE_INTEGER) throw new Error('Queue size cannot be greater than Number.MAX_SAFE_INTEGER');
+        
+        this.startIndex = 0;
         this.items = new Array();
         this.maxSize = maxSize || Number.MAX_SAFE_INTEGER;
+        this.flushSize = 1;
     }
 
     public enqueue(item: T): void {
         if (this.isFull()) throw new Error('Queue Overflow');
-        this.items.push(item);
+        const newFlushSize = this.items.push(item);
+        this.flushSize = Math.ceil(newFlushSize / 2);
     }
 
-    public dequeue(): T | undefined {
+    // Amortised: O(1)
+    public dequeue(): T {
         if (this.isEmpty()) throw new Error('Queue Underflow');
-        return this.items.shift();
+        if (this.startIndex === this.flushSize) {
+            this.items.splice(0, this.flushSize);
+            this.startIndex = 0;
+            this.flushSize = Math.ceil(this.size() / 2);
+        }
+        return this.items[this.startIndex++];
     }
 
     public peek(): T {
         if (this.isEmpty()) throw new Error('Queue Underflow');
-        return this.items[0];
+        return this.items[this.startIndex];
     }
 
     public printElements(): void {
@@ -34,7 +48,7 @@ export class Queue<T> {
     }
 
     public size(): number {
-        return this.items.length;
+        return this.items.length - this.startIndex;
     }
 
     public flush(): void {

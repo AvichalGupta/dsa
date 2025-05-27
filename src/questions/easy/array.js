@@ -1,3 +1,5 @@
+const { execute } = require('../helper');
+
 // Largest Element in an Array.
 function findLargestElementInArray(arr) {
     if (!arr.length) return null;
@@ -11,6 +13,7 @@ function findLargestElementInArray(arr) {
 
     return largestElement;
 }
+// execute([1,2,3,4,5], findLargestElementInArray);
 
 // Second Largest Element in an Array without sorting
 function findSecondLargestElementInArrayWithoutSorting(arr) {
@@ -29,6 +32,7 @@ function findSecondLargestElementInArrayWithoutSorting(arr) {
 
     return secondLargestElement;
 }
+// execute([1,2,3,4,5], findSecondLargestElementInArrayWithoutSorting);
 
 // Check if array is sorted
 function isArraySorted(arr, ascending = true) {
@@ -47,6 +51,8 @@ function isArraySorted(arr, ascending = true) {
 
     return true;
 }
+// execute([1,2,3,4,5], isArraySorted);
+
 
 // Remove Duplicates from Sorted Array
 function removeDuplicatesFromSortedArray(arr) {
@@ -63,6 +69,7 @@ function removeDuplicatesFromSortedArray(arr) {
 
     return arr;
 }
+// execute([1,1,1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,5], removeDuplicatesFromSortedArray);
 
 // Rotate Array Left once.
 function rotateArrayLeftOnce(arr) {
@@ -77,6 +84,7 @@ function rotateArrayLeftOnce(arr) {
     }
     return arr;
 }
+// execute([1,2,3,4,5,6], removeDuplicatesFromSortedArray);
 
 // Rotate Array Left D times.
 function rotateArrayMultipleTimes(arr, d) {
@@ -122,6 +130,7 @@ function rotateArrayMultipleTimes(arr, d) {
     // return solution1();
     return solution2();
 }
+// execute([1,2,3,4,5,6], 2, rotateArrayMultipleTimes);
 
 // Kadane's Algorithm: Maximum SubArray Sum.
 function getMaxSubArraySum(inputArr) {
@@ -145,7 +154,7 @@ function getMaxSubArraySum(inputArr) {
 
     return maxGlobal;
 }
-// getMaxSubArraySum([3, -2, -1]);
+// execute([3, -2, -1], getMaxSubArraySum);
 
 // Stock buy and sell
 function getMaxProfit(stockPrices) {
@@ -160,5 +169,4 @@ function getMaxProfit(stockPrices) {
     }
     return profit;
 }
-// getMaxProfit([5, -6, 1, 4, 12]);
-
+// execute([3, -2, -1, 5, 10], getMaxProfit);

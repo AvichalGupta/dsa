@@ -1,12 +1,12 @@
 import { ArrayBasedBinaryTree } from "../../../datastructures/typescript/trees/binary-tree/array-based-tree";
 
-export function preOrderTraversal(bTree: ArrayBasedBinaryTree<number>, nodeIndex: number, resultArr: number[]) {
+export function postOrderTraversal(bTree: ArrayBasedBinaryTree<number>, nodeIndex: number, resultArr: number[]) {
     const data = bTree.getData(nodeIndex);
     if (data === null) return;
-    
+
+    postOrderTraversal(bTree, (nodeIndex * 2) + 1, resultArr);
+    postOrderTraversal(bTree, (nodeIndex * 2) + 2, resultArr);
     resultArr.push(data);
-    preOrderTraversal(bTree, (nodeIndex * 2) + 1, resultArr);
-    preOrderTraversal(bTree, (nodeIndex * 2) + 2, resultArr);
 }
 
 function initialize() {
@@ -23,11 +23,10 @@ function initialize() {
     bTree.setRightChild(35, leftParentIndex);
 
     const result: number[] = [];
-    preOrderTraversal(bTree, 0, result);
+    postOrderTraversal(bTree, 0, result);
 
     console.log('preOrder Traversal Result: ', JSON.stringify(result));
 
 }
 
 initialize();
-
