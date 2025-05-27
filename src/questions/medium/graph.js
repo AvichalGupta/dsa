@@ -36,7 +36,6 @@ function mostProfitablePath(edges, bob, amount) {
     let currNode = bob;
 
     while (true) {   
-
         if (currNode === 0) break;
         
         if (bobDepth === depth[currNode]) amount[currNode] = amount[currNode] / 2;
