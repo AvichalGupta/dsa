@@ -1,3 +1,5 @@
+const { execute } = require('../helper')
+
 // Set Matrix Zeroes
 // Time Complexity: O(n^2)
 // Space Complexity: O(n)
@@ -25,17 +27,7 @@ function setMatrixZeroes(inputMatrix) {
 
     return inputMatrix;
 }
-
-// (() => {
-//     const input = [[0,1,2,0],[3,4,5,2],[1,3,1,5]];
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = setMatrixZeroes(input);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute([[0,1,2,0],[3,4,5,2],[1,3,1,5]], setMatrixZeroes);
 
 // Pascal Triangle
 // Time Complexity: O(n^2)
@@ -58,17 +50,7 @@ function generatePascalTriangle(input) {
 
     return output;
 }
-
-// (() => {
-//     const input = 6;
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = generatePascalTriangle(input);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute(6, generatePascalTriangle);
 
 // Pascal Triangle Variation 1: Print element from Pascal Triangle.
 function getElementFromPascalTriangle(row, col) {
@@ -131,18 +113,7 @@ function getElementFromPascalTriangle(row, col) {
 
     return solution2();
 }
-
-// (() => {
-//     const inputRow = 4;
-//     const inputColumn = 1;
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = getElementFromPascalTriangle(inputRow, inputColumn);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute(4, 1, getElementFromPascalTriangle);
 
 // Pascal Triangle Variation 2: Print row from Pascal Triangle.
 // Time Complexity: O(n^2) n = row
@@ -176,17 +147,7 @@ function getRowFromPascalTriangle(row) {
 
     return output;
 }
-
-// (() => {
-//     const inputRow = 6;
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = getRowFromPascalTriangle(inputRow);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute(6, getRowFromPascalTriangle);
 
 // Next Permutation Lexographically.
 // Time Complexity: O(n)
@@ -272,17 +233,7 @@ function getNextPermutationLexographically(inputArr) {
 
     return solution2();
 }
-
-// (() => {
-//     const input = [1,3,2];
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = getNextPermutationLexographically(input);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute([1,3,2], getNextPermutationLexographically);
 
 // Sort array of 0's, 1's 2's
 // Time Complexity: O(n)
@@ -311,17 +262,7 @@ function sortArray(inputArr) {
         }
     }
 }
-
-// (() => {
-//     const input = [1,0,0,0,2,1,1,2];
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = sortArray(input);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute([1,0,0,0,2,1,1,2], sortArray);
 
 // Rotate a nXn Matrix
 // Time Complexity: O(n^2)
@@ -343,17 +284,7 @@ function rotateMatrix(inputMatrix) {
     }
     return inputMatrix;
 }
-
-// (() => {
-//     const input = [[1,2,3],[4,5,6],[7,8,9]];
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = rotateMatrix(input);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute([[1,2,3],[4,5,6],[7,8,9]], rotateMatrix);
 
 //Merge Overlapping SubIntervals
 // Time Complexity: O(nlog(n)) - because of sorting.
@@ -382,17 +313,7 @@ function mergeOverlappingSubIntervals(inputIntervals) {
     }
     return inputIntervals;
 }
-
-// (() => {
-//     const input = [[1,4],[2,3]];
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = mergeOverlappingSubIntervals(input);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute([[1,4],[2,3]], mergeOverlappingSubIntervals);
 
 // Merge two sorted array's without extra space
 // Time Complexity: O(nlog(n)) - because of sorting.
@@ -403,16 +324,7 @@ function mergeSortedArrays(arr1, arr2) {
     }
     return arr1.sort((a, b) => { return a - b });
 }
-
-// (() => {
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = mergeSortedArrays([1,6,4],[2,5,0,10]);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute([1,6,4],[2,5,0,10], mergeSortedArrays);
 
 // Find duplicates in array of N + 1, where each element is between 1 and N
 // Time Complexity: O(nlog(n)) - because of sorting.
@@ -437,16 +349,7 @@ function findDuplicates(inputArr) {
 
     return slow || null;
 }
-
-// (() => {
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = findDuplicates([1,2,12,14]);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute([1,2,12,14], findDuplicates);
 
 // Search a Sorted 2D Matrix
 // Time Complexity: O(n)
@@ -498,17 +401,7 @@ function searchElementInSortedMatrix(inputMatrix, elementToBeFound) {
 
     return solution1();
 }
-
-// (() => {
-//     const input = [[1,2,3],[4,5,6],[7,8,9]];
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = searchElementInSortedMatrix(input, 9);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute([[1,2,3],[4,5,6],[7,8,9]], 9, searchElementInSortedMatrix);
 
 // Implement pow(x,n)
 // Time Complexity: O(n)
@@ -520,17 +413,7 @@ function implementPowerFn(baseValue, power) {
 
     return baseValue * implementPowerFn(baseValue, power - 1);
 }
-
-// (() => {
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = implementPowerFn(4,4);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
-
+// execute(12, 4, implementPowerFn);
 
 // Find Majority Element occurring more than N/2 times.
 // Time Complexity: O(n)
@@ -565,17 +448,7 @@ function findMajorityElement(inputArr) {
 
     return null;
 }
-
-// (() => {
-//     const input = [1,2,2];
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = findMajorityElement(input);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute([1,2,2,3,3,3,3,3,3,3,4], findMajorityElement);
 
 // Find Majority Element occurring more than N/X times.
 // Time Complexity: O(n)
@@ -600,17 +473,7 @@ function findMajorityElementX(inputArr, X) {
 
     return Object.keys(Object.fromEntries(majorityElementFreqMap.entries())).map((val) => +val) || [];
 }
-
-// (() => {
-//     const input = [1,3,3,3,2,2,2];
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = findMajorityElementX(input,3);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
+// execute([1,3,3,3,2,2,2], findMajorityElementX);
 
 // Grid unique paths, find all unique paths in a matrix from point A to point B while moving down and right only.
 function findAllUniquePaths(rowLen, colLen) {
@@ -694,21 +557,11 @@ function findAllUniquePaths(rowLen, colLen) {
 
     return solution4();
 }
-
-// (() => {
-//     const rowLen = 3;
-//     const colLen = 7;
-//     const initMemory = process.memoryUsage().heapUsed;
-//     console.time('Time Taken: ');
-//     const output = findAllUniquePaths(rowLen, colLen);
-//     console.timeEnd('Time Taken: ');
-//     const finalMemory = process.memoryUsage().heapUsed;
-//     console.log('\noutput: ', output);
-//     console.log('\nTotal Memory Used: ', ((finalMemory - initMemory) / 1024).toFixed(2), ' kB');
-// })()
-
+// execute(3, 7, findAllUniquePaths);
 
 // Tow Sum: Return indices of elements in array that when added give the targetSum.
+// Time Complexity: O(n)
+// Space Complexity: O(n);
 function twoSum(arr, targetSum) {
 
     // Map based approach: Check if complement value exists in array and return indices
@@ -727,51 +580,35 @@ function twoSum(arr, targetSum) {
 
         return [-1, -1];
     }
+    return solution1();
 }
+// execute([1,2,3,4,5,6], 10, twoSum);
 
+// Find Max Product of an array
+// Time Complexity: O(n)
+// Space Complexity: O(1)
 function maxProduct(nums) {
     let maxProd = nums[0];
     let minProd = nums[0];
     let result = nums[0];
     
     for (let i = 1; i < nums.length; i++) {
-      const num = nums[i];
-      if (num < 0) {
-        [maxProd, minProd] = [minProd, maxProd];
-      }
-      console.log('before: ', num, maxProd, minProd, result);
-      maxProd = Math.max(num, maxProd * num);
-      minProd = Math.min(num, minProd * num);
-      result = Math.max(result, maxProd);
-      console.log('after: ', num, maxProd, minProd, result);
-    }
-    
-    console.log('result: ', result);
-}
-
-// maxProduct([5, -2, -3, -31]);
-
-function productExceptSelf(nums) {
-    const n = nums.length;
-    const answer = new Array(n).fill(1);
-    
-    // Compute right products first
-    let right = 1;
-    for (let i = n - 1; i >= 0; i--) {
-      answer[i] = right;
-      right *= nums[i];
+        const num = nums[i];
+        if (num < 0) {
+            [maxProd, minProd] = [minProd, maxProd];
+        }
+        maxProd = Math.max(num, maxProd * num);
+        minProd = Math.min(num, minProd * num);
+        result = Math.max(result, maxProd);
     }
 
-     // Then multiply by left products
-     let left = 1;
-     for (let i = 0; i < n; i++) {
-         answer[i] *= left;
-         left *= nums[i];
-     }
-    
-    console.log(answer);
+    return result;
 }
+// execute([1,1,2,3,4,4], maxProduct);
 
+// Find Max Product of an array, except self
+// Time Complexity: O(n)
+// Space Complexity: O(n)
 function productExceptSelf(nums) {
     const n = nums.length;
     const answer = new Array(n).fill(1);
@@ -779,20 +616,17 @@ function productExceptSelf(nums) {
     // Left products
     let left = 1;
     for (let i = 0; i < n; i++) {
-      answer[i] = left;
-      left *= nums[i];
+        answer[i] = left;
+        left *= nums[i];
     }
     
     // Right products
     let right = 1;
     for (let i = n - 1; i >= 0; i--) {
-      answer[i] *= right;
-      right *= nums[i];
+        answer[i] *= right;
+        right *= nums[i];
     }
-    
-    console.log(answer);
+
+    return answer;
 } 
-
-productExceptSelf([1,2,3]);
-
-//https://docs.google.com/spreadsheets/d/1LOulbPzt6mM89q_zO3Obp3L_Jb3w6CkHZfYnjmwOpAA/edit?gid=0#gid=0
+// execute([1,1,2,3,4,4], productExceptSelf);
