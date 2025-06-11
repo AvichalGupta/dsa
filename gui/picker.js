@@ -172,8 +172,9 @@ function takeInputs(foldersAndFilesNames, finalFolderAndFilesText, fileIds) {
             }
             case 'down': {
 
-                if (counter >= fileIds.length - 1) {
-                    counter = fileIds[0];
+                counter = Math.max(0, Math.min(counter, fileIds.length - 1));
+
+                if (counter === fileIds.length - 1) {
                     break;
                 }
 
