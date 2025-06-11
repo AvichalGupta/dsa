@@ -9,3 +9,4 @@ After installation, and project setup, run the command "npm run start".
 Additional Pointers:
 - The above only works for macOS
 - To interact with the GUI use the "up", "down" arrow keys, "enter" key and "q" key
+- Uncomment the execute functions in the files under the questions folder, to view function outputs.

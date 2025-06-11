@@ -172,9 +172,8 @@ function takeInputs(foldersAndFilesNames, finalFolderAndFilesText, fileIds) {
             }
             case 'down': {
 
-                counter = Math.max(0, Math.min(counter, fileIds.length - 1));
-
-                if (counter === fileIds.length - 1) {
+                if (counter >= fileIds.length - 1) {
+                    counter = fileIds[0];
                     break;
                 }
 
@@ -223,8 +222,9 @@ function takeInputs(foldersAndFilesNames, finalFolderAndFilesText, fileIds) {
 }
 
 function repaint(finalFolderAndFilesText) {
-  console.clear();
-  console.log(finalFolderAndFilesText.join(''));
+    console.clear();
+    console.log(`\n\tUse the \n\t'up', 'down' arrow keys to navigate files \n\t'Enter' key to run the file \n\t'q' key to quit the program\n`);
+    console.log(finalFolderAndFilesText.join(''));
 }
 
 getFiles();
