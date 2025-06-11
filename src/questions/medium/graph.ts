@@ -1,19 +1,20 @@
-const { execute } = require('../helper');
+import { Stack } from "../../datastructures/typescript/stacks/stack";
+import { execute } from "../helper";
 
 // 2467. Most Profitable Path in a Tree
 // Time Complexity: O(n)
-// Space Complexity: O(1)
+// Space Complexity: O(n^2)
 
-function mostProfitablePath(edges, bob, amount) {
-    const adjacencyList = Array.from({ length: edges.length + 1 }, () => []);
+function mostProfitablePath(edges: number[][], bob: number, amount: number[]) {
+    const adjacencyList: number[][] = Array.from({ length: edges.length + 1 }, () => []);
 
     for (const [u, v] of edges) {
         adjacencyList[u].push(v);
         adjacencyList[v].push(u);
     }
 
-    const parentList = new Array(edges.length + 1).fill(-1);
-    const depth = new Array(edges.length + 1).fill(0);
+    const parentList: number[] = new Array(edges.length + 1).fill(-1);
+    const depth: number[] = new Array(edges.length + 1).fill(0);
 
     let queue = [0];
     let iter = 0;
@@ -45,13 +46,13 @@ function mostProfitablePath(edges, bob, amount) {
         bobDepth++;
     }
 
-    let stack = [0];
+    let stack = new Stack<number>();
     let maxProfit = -Infinity;
     let profitArr = new Array(amount.length + 1).fill(0);
     profitArr[0] = amount[0];
     let visited = new Array(edges.length + 1).fill(0);
 
-    while (stack.length) {
+    while (!stack.isEmpty()) {
         currNode = stack.pop();
 
         if (currNode !== 0 && adjacencyList[currNode].length === 1) {

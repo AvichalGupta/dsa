@@ -4,9 +4,12 @@
   "description": "A repo filled with all sorts of datastructures, algorithms and practice questions. Intended to be used as a recap for interview prep.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "./node_modules/.bin/tsc -p .",
-    "gen-dts": "dts-bundle-generator -o dist/index.d.ts src/datastructures/typescript/main.ts"
+    "build": "npx tsc",
+    "start": "clear && npm run build && node gui/picker.js",
+    "runfile": "node"
+  },
+  "config": {
+    "file": "index.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +22,7 @@
   },
   "homepage": "https://github.com/AvichalGupta/dsa#readme",
   "devDependencies": {
+    "@types/node": "^24.0.0",
     "dts-bundle-generator": "^9.5.1"
   }
 }

@@ -1,4 +1,7 @@
 // Space Complexity: 
+
+import { MAX_SIZE } from "../../../../constants";
+
 // Time Complexity: 
 class CircularDoublyLinkedListNode<T> {
     public data: T;
@@ -19,7 +22,7 @@ export class CircularDoublyLinkedList<T> {
 
     constructor(maxSize?: number) {
         this.head = null;
-        this.maxSize = maxSize || Number.MAX_SAFE_INTEGER;
+        this.maxSize = maxSize || MAX_SIZE;
         this.currentSize = 0;
     }
 

@@ -1,4 +1,7 @@
 // Space Complexity: 
+
+import { MAX_SIZE } from "../../../constants";
+
 // Time Complexity: 
 class DoublyLinkedListNode<T> {
     public data: T;
@@ -21,7 +24,7 @@ export class DoublyLinkedList<T> {
     constructor(maxSize?: number) {
         this.head = null;
         this.tail = null;
-        this.maxSize = maxSize || Number.MAX_SAFE_INTEGER;
+        this.maxSize = maxSize || MAX_SIZE;
         this.currentSize = 0;
     }
 

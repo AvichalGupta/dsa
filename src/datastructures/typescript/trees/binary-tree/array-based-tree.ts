@@ -1,9 +1,12 @@
 // Space Complexity: 
+
+import { MAX_SIZE } from "../../../../constants";
+
 // Time Complexity: 
 export class ArrayBasedBinaryTree<T> {
     private tree: Array<T>;
 
-    constructor(maxSize = Number.MAX_SAFE_INTEGER) {
+    constructor(maxSize = MAX_SIZE) {
         this.tree = new Array(maxSize).fill(null);
     }
 

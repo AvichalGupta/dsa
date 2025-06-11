@@ -3,8 +3,8 @@ const { execute } = require('../helper')
 // Set Matrix Zeroes
 // Time Complexity: O(n^2)
 // Space Complexity: O(n)
-function setMatrixZeroes(inputMatrix) {
-    const zeroesIndexSet = new Set();
+function setMatrixZeroes(inputMatrix: number[][]) {
+    const zeroesIndexSet: Set<string> = new Set<string>();
 
     if (inputMatrix.length <= 1) {
         return inputMatrix;
@@ -19,9 +19,9 @@ function setMatrixZeroes(inputMatrix) {
     }
 
     for (const indexVal of zeroesIndexSet) {
-        inputMatrix[indexVal[0]] = new Array(inputMatrix[0].length).fill(0);
+        inputMatrix[+indexVal[0]] = new Array(inputMatrix[0].length).fill(0);
         for (const rowIndex in inputMatrix) {
-            inputMatrix[rowIndex][indexVal[1]] = 0;
+            inputMatrix[rowIndex][+indexVal[1]] = 0;
         }
     }
 
@@ -32,7 +32,7 @@ function setMatrixZeroes(inputMatrix) {
 // Pascal Triangle
 // Time Complexity: O(n^2)
 // Space Complexity: O(n)
-function generatePascalTriangle(input) {
+function generatePascalTriangle(input: number) {
     const output = [];
     for (let i = 0; i < input; i++) {
         output.push(new Array(i + 1).fill(1));
@@ -53,7 +53,7 @@ function generatePascalTriangle(input) {
 // execute(6, generatePascalTriangle);
 
 // Pascal Triangle Variation 1: Print element from Pascal Triangle.
-function getElementFromPascalTriangle(row, col) {
+function getElementFromPascalTriangle(row: number, col: number) {
 
     // Brute Force: Create the pascal triangle and fetch the element at row, column.
     
@@ -65,15 +65,15 @@ function getElementFromPascalTriangle(row, col) {
             return -1;
         }
     
-        function factorial(num) {
+        function factorial(num: number): number {
             if (num <= 1) {
                 return 1;
             }
     
-            return num * recurse(num - 1);
+            return num * factorial(num - 1);
         }
     
-        function nCr(n, r) {
+        function nCr(n: number, r: number) {
             // nCr = n! / ( r! * (n - r)! );
             return (factorial(n) / (factorial(r) * factorial(n-r)));
         }
@@ -118,7 +118,7 @@ function getElementFromPascalTriangle(row, col) {
 // Pascal Triangle Variation 2: Print row from Pascal Triangle.
 // Time Complexity: O(n^2) n = row
 // Space Complexity: O(n)
-function getRowFromPascalTriangle(row) {
+function getRowFromPascalTriangle(row: number) {
 
     // Brute Force: Create the pascal triangle and fetch the element at row.
     
@@ -152,7 +152,7 @@ function getRowFromPascalTriangle(row) {
 // Next Permutation Lexographically.
 // Time Complexity: O(n)
 // Space Complexity: O(1)
-function getNextPermutationLexographically(inputArr) {
+function getNextPermutationLexographically(inputArr: number[]) {
     function solution1() {
 
         let breakPoint = null;
@@ -179,14 +179,13 @@ function getNextPermutationLexographically(inputArr) {
         }
     
         // smallestVal is the smallest value just bigger than the breakPoint value, it will never be null after the loop.
-    
         inputArr[smallestValIndex] += inputArr[breakPoint];
         inputArr[breakPoint] = inputArr[smallestValIndex] - inputArr[breakPoint];
         inputArr[smallestValIndex] -= inputArr[breakPoint];
     
         // Approach 1: using single for loop, on additional variables. 
         let lastIndex = -1;
-        for (let i = breakPoint + 1; i < (inputArr + breakPoint + 1) / 2; i++) {
+        for (let index = breakPoint + 1; index < (inputArr.length + breakPoint + 1) / 2; index++) {
             lastIndex = inputArr.length - 1 - (index - (breakPoint + 1));
             inputArr[lastIndex] += inputArr[index];
             inputArr[index] = inputArr[lastIndex] - inputArr[index];
@@ -238,7 +237,7 @@ function getNextPermutationLexographically(inputArr) {
 // Sort array of 0's, 1's 2's
 // Time Complexity: O(n)
 // Space Complexity: O(1)
-function sortArray(inputArr) {
+function sortArray(inputArr: number[]) {
     // Using Dutch National Flag algorithm.
     
     let low = 0;
@@ -267,7 +266,7 @@ function sortArray(inputArr) {
 // Rotate a nXn Matrix
 // Time Complexity: O(n^2)
 // Space Complexity: O(1)
-function rotateMatrix(inputMatrix) {
+function rotateMatrix(inputMatrix: number[][]) {
 
     if (inputMatrix.length !== inputMatrix[0].length) throw new Error('Please provide a square matrix!');
 
@@ -289,7 +288,7 @@ function rotateMatrix(inputMatrix) {
 //Merge Overlapping SubIntervals
 // Time Complexity: O(nlog(n)) - because of sorting.
 // Space Complexity: O(1)
-function mergeOverlappingSubIntervals(inputIntervals) {
+function mergeOverlappingSubIntervals(inputIntervals: number[][]) {
     let currentInterval = null;
     let nextInterval = null;
     let inputSize = inputIntervals.length - 1;
@@ -318,7 +317,7 @@ function mergeOverlappingSubIntervals(inputIntervals) {
 // Merge two sorted array's without extra space
 // Time Complexity: O(nlog(n)) - because of sorting.
 // Space Complexity: O(1)
-function mergeSortedArrays(arr1, arr2) {
+function mergeSortedArrays(arr1: number[], arr2: number[]) {
     for (let index = 0; index < arr2.length; index++) {
         arr1.push(arr2[index]);
     }
@@ -329,7 +328,7 @@ function mergeSortedArrays(arr1, arr2) {
 // Find duplicates in array of N + 1, where each element is between 1 and N
 // Time Complexity: O(nlog(n)) - because of sorting.
 // Space Complexity: O(1)
-function findDuplicates(inputArr) {
+function findDuplicates(inputArr: number[]) {
     // Hare and Tortoise Algorithm.
     let slow = inputArr[0];
     let fast = inputArr[0];
@@ -354,7 +353,7 @@ function findDuplicates(inputArr) {
 // Search a Sorted 2D Matrix
 // Time Complexity: O(n)
 // Space Complexity: O(1)
-function searchElementInSortedMatrix(inputMatrix, elementToBeFound) {
+function searchElementInSortedMatrix(inputMatrix: number[][], elementToBeFound: number) {
     function solution1() {
         const rowSize = inputMatrix.length;
         const colSize = inputMatrix[0].length;
@@ -406,7 +405,7 @@ function searchElementInSortedMatrix(inputMatrix, elementToBeFound) {
 // Implement pow(x,n)
 // Time Complexity: O(n)
 // Space Complexity: O(1)
-function implementPowerFn(baseValue, power) {
+function implementPowerFn(baseValue: number, power: number): number {
     power = Math.floor(power);
     
     if (power === 0) return 1;
@@ -418,7 +417,7 @@ function implementPowerFn(baseValue, power) {
 // Find Majority Element occurring more than N/2 times.
 // Time Complexity: O(n)
 // Space Complexity: O(1)
-function findMajorityElement(inputArr) {
+function findMajorityElement(inputArr: number[]) {
     let majorityElement = null;
     let counter = 0;
 
@@ -453,7 +452,7 @@ function findMajorityElement(inputArr) {
 // Find Majority Element occurring more than N/X times.
 // Time Complexity: O(n)
 // Space Complexity: O(1)
-function findMajorityElementX(inputArr, X) {
+function findMajorityElementX(inputArr: number[], X: number) {
     let majorityElementFreqMap = new Map();
 
     for (const value of inputArr) {
@@ -473,16 +472,16 @@ function findMajorityElementX(inputArr, X) {
 
     return Object.keys(Object.fromEntries(majorityElementFreqMap.entries())).map((val) => +val) || [];
 }
-// execute([1,3,3,3,2,2,2], findMajorityElementX);
+// execute([1,3,3,3,2,2,2], 2, findMajorityElementX);
 
 // Grid unique paths, find all unique paths in a matrix from point A to point B while moving down and right only.
-function findAllUniquePaths(rowLen, colLen) {
+function findAllUniquePaths(rowLen: number, colLen: number) {
 
     // Time Complexity: O(n)
     // Space Complexity: O(1)
     function solution1() {
         // brute force recursion - This approach perfroms 2 operations at every square (go right and go down), it will re-visit already visited squares.
-        function recurse(rowVal = 0, colVal = 0) {
+        function recurse(rowVal = 0, colVal = 0): number {
             if (rowVal === rowLen && colVal === colLen) return 1;
             if (rowVal > rowLen || colVal > colLen) return 0;
 
@@ -502,20 +501,20 @@ function findAllUniquePaths(rowLen, colLen) {
         // it will cache visited squares and does not perfrom recursion on the re-visited squares. 
         // It instead returns the value from the cache, 
         // in this case the value is the number of possible paths till the end from the cached square.
-        const memoisedArr = new Array(rowLen + 1).fill(new Array(colLen + 1).fill(-1));
+        const memoisedArr: number[][] = Array.from({ length: rowLen + 1 }, () => { return new Array(colLen + 1).fill(-1) });
 
-        function recurse(rowVal = 0, colVal = 0, memoisedArr) {
+        function recurse(rowVal = 0, colVal = 0, memoisedArr: number[][]): number {
             if (rowVal === rowLen && colVal === colLen) return 1;
             if (rowVal > rowLen || colVal > colLen) return 0;
 
-            if (memo[rowVal][colVal] === -1) {
+            if (memoisedArr[rowVal][colVal] === -1) {
                 const goRight = recurse(rowVal, colVal + 1, memoisedArr);
                 const goDown = recurse(rowVal + 1, colVal, memoisedArr);
     
-                memo[rowVal][colVal] = goRight + goDown;
+                memoisedArr[rowVal][colVal] = goRight + goDown;
             }
 
-            return memo[rowVal][colVal];
+            return memoisedArr[rowVal][colVal];
         }
 
         return recurse(0,0,memoisedArr);
@@ -562,7 +561,7 @@ function findAllUniquePaths(rowLen, colLen) {
 // Tow Sum: Return indices of elements in array that when added give the targetSum.
 // Time Complexity: O(n)
 // Space Complexity: O(n);
-function twoSum(arr, targetSum) {
+function twoSum(arr: number[], targetSum: number) {
 
     // Map based approach: Check if complement value exists in array and return indices
     // Time Complexity: O(n) n = arr.length
@@ -587,7 +586,7 @@ function twoSum(arr, targetSum) {
 // Find Max Product of an array
 // Time Complexity: O(n)
 // Space Complexity: O(1)
-function maxProduct(nums) {
+function maxProduct(nums: number[]) {
     let maxProd = nums[0];
     let minProd = nums[0];
     let result = nums[0];
@@ -609,7 +608,7 @@ function maxProduct(nums) {
 // Find Max Product of an array, except self
 // Time Complexity: O(n)
 // Space Complexity: O(n)
-function productExceptSelf(nums) {
+function productExceptSelf(nums: number[]) {
     const n = nums.length;
     const answer = new Array(n).fill(1);
     

@@ -1,4 +1,7 @@
 // Space Complexity: 
+
+import { MAX_SIZE } from "../../../../constants";
+
 // Time Complexity: 
 class CircularSinglyLinkedListNode<T> {
     public data: T;
@@ -18,7 +21,7 @@ export class CircularSinglyLinkedList<T> {
     constructor(maxSize?: number) {
         this.head = null;
         this.currentSize = 0;
-        this.maxSize = maxSize || Number.MAX_SAFE_INTEGER;
+        this.maxSize = maxSize || MAX_SIZE;
     }
 
     private findNodeByIndex(index: number): CircularSinglyLinkedListNode<T> {

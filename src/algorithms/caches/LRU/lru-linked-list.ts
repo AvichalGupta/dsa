@@ -1,3 +1,5 @@
+import { MAX_SIZE } from "../../../constants";
+
 class LRUNode<K, V> {
     public next: LRUNode<K, V> | null;
     public prev: LRUNode<K, V> | null;
@@ -26,7 +28,7 @@ class LinkLisedBasedLRUCache<K, V> {
         this.cache = new Map<K, LRUNode<K, V>>();
         this.head = null;
         this.tail = null;
-        this.capacity = capacity ?? Number.MAX_SAFE_INTEGER;
+        this.capacity = capacity ?? MAX_SIZE;
     }
 
     // This is called every time a get/set operation is done, since it increases the recency of the requested key.

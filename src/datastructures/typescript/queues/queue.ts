@@ -1,4 +1,7 @@
 // Space Complexity:
+
+import { MAX_SIZE } from "../../../constants";
+
 // Time Complexity: 
 export class Queue<T> {
     private items: Array<T>;
@@ -8,11 +11,11 @@ export class Queue<T> {
 
     constructor(maxSize?: number) {
         if (maxSize === 0) throw new Error('Cannot initialise queue of size 0');
-        if (maxSize && maxSize > Number.MAX_SAFE_INTEGER) throw new Error('Queue size cannot be greater than Number.MAX_SAFE_INTEGER');
+        if (maxSize && maxSize > MAX_SIZE) throw new Error('Queue size cannot be greater than ' + MAX_SIZE);
         
         this.startIndex = 0;
         this.items = new Array();
-        this.maxSize = maxSize || Number.MAX_SAFE_INTEGER;
+        this.maxSize = maxSize || MAX_SIZE;
         this.flushSize = 1;
     }
 

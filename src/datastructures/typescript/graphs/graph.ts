@@ -1,62 +1,92 @@
-import { breadthFirstSearch } from "../../../algorithms/trees/traversal/bfs";
-import { depthFirstSearch } from "../../../algorithms/trees/traversal/dfs";
+import { breadthFirstSearch } from "../../../algorithms/graphs/traversal/bfs";
+import { depthFirstSearch } from "../../../algorithms/graphs/traversal/dfs";
+import { Queue } from "../queues/queue";
 
-export class Graph {
+export class Graph<T> {
     private graph: number[][];
-    private isAdjacencyMatrix: boolean;
 
-    constructor(adjacencyMatrix: number[][]) {
-        this.graph = this.convertToAdjacencyList(adjacencyMatrix);
-        this.isAdjacencyMatrix = false;
+    constructor(adjacencyMatrix: T[][], connectionIndicator: T) {
+        this.graph = this.convertToAdjacencyList(adjacencyMatrix, connectionIndicator);
     }
 
-    private convertToAdjacencyList(adjacencyMatrix: number[][]): number[][] {
-        const adjacencyList: number[][] = new Array(adjacencyMatrix.length).fill([]);
+    private convertToAdjacencyList(adjacencyMatrix: T[][], connectionIndicator: T): number[][] {
+        const adjacencyList: number[][] = Array.from({ length: adjacencyMatrix.length }, () => []);
 
         for (let i = 0; i < adjacencyMatrix.length; i++) {
             for (let j = 0; j < adjacencyMatrix[0].length; j++) {
-                if (adjacencyMatrix[i][j] === 1) {
+                if (adjacencyMatrix[i][j] === connectionIndicator) {
                     adjacencyList[i].push(j);
                 }
             }
         }
 
-        this.isAdjacencyMatrix = false;
-
         return adjacencyList;
     }
 
-    public convertToAdjacencyMatrix() {
-        const adjacencyList = this.graph;
-        const adjacencyMatrix = this.graph;
-
-        for (let i = 0; i < adjacencyList.length; i++) {
-            for (let j = 0; j < adjacencyList[i].length; j++) {
-                adjacencyMatrix[i][j] = 1;
-            }
-        }
-
-        this.isAdjacencyMatrix = true;
-
-        this.graph = adjacencyMatrix;
-    }
-
     public BFS() {
-        if (this.isAdjacencyMatrix) {
-            return breadthFirstSearch(this.convertToAdjacencyList(this.graph))
-        }
         return breadthFirstSearch(this.graph);
     }
 
     public DFS() {
-        if (this.isAdjacencyMatrix) {
-            return depthFirstSearch(this.convertToAdjacencyList(this.graph))
-        }
         return depthFirstSearch(this.graph);
     }
 
-    public detectCycle() {
+    public detectCycle(directed: boolean = false): boolean {
+        let cycleFound = false;
+        if (directed) {
+            
+            const inDegreeMap = new Map<number, number>();
+            
+            let visited = new Array<number>().fill(0);
 
+            for (let i = 0; i < this.graph.length; i++) {
+                for (const childNode of this.graph[i]) {
+                    if (inDegreeMap.has(childNode)) {
+                        inDegreeMap.set(childNode, (inDegreeMap.get(childNode) || 0) + 1);
+                    } else {
+                        inDegreeMap.set(childNode, 0);
+                    }
+                }
+            }
+
+            for (let i = 0; i < this.graph.length; i++) {
+                const queue = new Queue<number>();
+                visited = new Array<number>().fill(0);
+
+                queue.enqueue(i);
+                while (!queue.isEmpty()) {
+                    const node = queue.dequeue();
+
+                    if (visited[node] === 0) {
+                        visited[node] = 1;
+                        for (const childNode of this.graph[node]) {
+                            queue.enqueue(childNode);
+                        }
+                    }
+                }
+            }
+        } else {
+            for (let i = 0; i < this.graph.length; i++) {
+                const queue = new Queue<number>();
+                const visited = new Array<number>().fill(0);
+
+                const inDegreeMap = new Map<number, number>();
+
+                queue.enqueue(i);
+                while (!queue.isEmpty()) {
+                    const node = queue.dequeue();
+
+                    if (visited[node] === 0) {
+                        visited[node] = 1;
+                        for (const childNode of this.graph[node]) {
+                            queue.enqueue(childNode);
+                        }
+                    }
+                }
+            }
+        }
+
+        return cycleFound;
     }
 
 }

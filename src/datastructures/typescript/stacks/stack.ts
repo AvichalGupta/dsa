@@ -1,4 +1,7 @@
 // Space Complexity: 
+
+import { MAX_SIZE } from "../../../constants";
+
 // Time Complexity: 
 export class Stack<T> {
     private items: Array<T>;
@@ -6,7 +9,7 @@ export class Stack<T> {
 
     constructor(maxSize?: number) {
         this.items = new Array();
-        this.maxSize = maxSize || Number.MAX_SAFE_INTEGER;
+        this.maxSize = maxSize || MAX_SIZE;
     }
 
     public push(item: T): void {
@@ -14,9 +17,9 @@ export class Stack<T> {
         this.items.push(item);
     }
 
-    public pop(): T | undefined {
+    public pop(): T {
         if (this.isEmpty()) throw new Error('Stack Underflow');
-        return this.items.pop();
+        return this.items.pop()!;
     }
 
     public peek(): T {

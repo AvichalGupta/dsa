@@ -1,13 +1,13 @@
-const { execute } = require('../helper');
+import { execute } from "../helper";
 
 // Largest Element in an Array.
-function findLargestElementInArray(arr) {
+function findLargestElementInArray(arr: number[]) {
     if (!arr.length) return null;
     
-    let largestElement = null;
-    for (const index in arr) {
-        if (largestElement < arr[index]) {
-            largestElement = arr[index];
+    let largestElement = -Infinity;
+    for (const value of arr) {
+        if (largestElement < value) {
+            largestElement = value;
         }
     }
 
@@ -16,17 +16,17 @@ function findLargestElementInArray(arr) {
 // execute([1,2,3,4,5], findLargestElementInArray);
 
 // Second Largest Element in an Array without sorting
-function findSecondLargestElementInArrayWithoutSorting(arr) {
+function findSecondLargestElementInArrayWithoutSorting(arr: number[]) {
     if (!arr || arr.length <= 1) return null;
 
-    let largestElement = null;
-    let secondLargestElement = null;
-    for (const index in arr) {
-        if (largestElement < arr[index]) {
+    let largestElement = -Infinity;
+    let secondLargestElement = -Infinity;
+    for (const value of arr) {
+        if (largestElement < value) {
             secondLargestElement = largestElement;
-            largestElement = arr[index];
-        } else if (secondLargestElement < arr[index]) {
-            secondLargestElement = arr[index];
+            largestElement = value;
+        } else if (secondLargestElement < value) {
+            secondLargestElement = value;
         }
     }
 
@@ -35,7 +35,7 @@ function findSecondLargestElementInArrayWithoutSorting(arr) {
 // execute([1,2,3,4,5], findSecondLargestElementInArrayWithoutSorting);
 
 // Check if array is sorted
-function isArraySorted(arr, ascending = true) {
+function isArraySorted(arr: number[], ascending = true) {
     if (!arr || !arr.length) return false;
 
     if (arr.length === 1) return true;
@@ -55,7 +55,7 @@ function isArraySorted(arr, ascending = true) {
 
 
 // Remove Duplicates from Sorted Array
-function removeDuplicatesFromSortedArray(arr) {
+function removeDuplicatesFromSortedArray(arr: number[]) {
     if (!arr || arr.length <= 1) return [];
 
     let index = 1;
@@ -72,7 +72,7 @@ function removeDuplicatesFromSortedArray(arr) {
 // execute([1,1,1,1,1,1,2,2,2,2,2,3,3,3,3,4,4,5], removeDuplicatesFromSortedArray);
 
 // Rotate Array Left once.
-function rotateArrayLeftOnce(arr) {
+function rotateArrayLeftOnce(arr: number[]) {
     if (!arr || !arr.length) return [];
 
     if (arr.length === 1) return arr;
@@ -87,7 +87,7 @@ function rotateArrayLeftOnce(arr) {
 // execute([1,2,3,4,5,6], removeDuplicatesFromSortedArray);
 
 // Rotate Array Left D times.
-function rotateArrayMultipleTimes(arr, d) {
+function rotateArrayMultipleTimes(arr: number[], d: number) {
     if (!arr || !arr.length) return [];
 
     if (arr.length === 1) return arr;
@@ -133,7 +133,7 @@ function rotateArrayMultipleTimes(arr, d) {
 // execute([1,2,3,4,5,6], 2, rotateArrayMultipleTimes);
 
 // Kadane's Algorithm: Maximum SubArray Sum.
-function getMaxSubArraySum(inputArr) {
+function getMaxSubArraySum(inputArr: number[]) {
     let maxCurrent = inputArr[0];
     let maxGlobal = inputArr[0];
 
@@ -157,7 +157,7 @@ function getMaxSubArraySum(inputArr) {
 // execute([3, -2, -1], getMaxSubArraySum);
 
 // Stock buy and sell
-function getMaxProfit(stockPrices) {
+function getMaxProfit(stockPrices: number[]) {
     let minPrice = stockPrices[0], profit = 0;
     for (let i = 1; i < stockPrices.length; i++) {
         
@@ -169,4 +169,4 @@ function getMaxProfit(stockPrices) {
     }
     return profit;
 }
-// execute([3, -2, -1, 5, 10], getMaxProfit);
+execute([3, -2, -1, 5, 10], getMaxProfit);

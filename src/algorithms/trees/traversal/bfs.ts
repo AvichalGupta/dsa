@@ -1,27 +1,23 @@
 import { Queue } from "../../../datastructures/typescript/queues/queue";
+import { LinkedListBasedBinaryTree, LinkedListNode } from "../../../datastructures/typescript/trees/binary-tree/linked-list-based-tree";
 
-// Space Complexity: O(n(visited array) + n(queue) + n(bfsResult)) = O(n)
-// Time Complexity: O(N) + O(2E), queue time comp is O(n), childNodes for loop runs O(2 * number of edges) times. = O(Math.max(N, 2E))
-export function breadthFirstSearch(adjacencyList: number[][]) {
-    const queue = new Queue<number>();
-    const visited = new Array(adjacencyList.length).fill(0);
-    const bfsResult = new Array();
+export function breadthFirstSearch<T>(tree: LinkedListBasedBinaryTree<T>): T[] {
+    
+    const queue = new Queue<LinkedListNode<T>>();
+    queue.enqueue(tree.getRoot());
+    const bfsResult = new Array<T>();
 
-    for (let startIndex = 0; startIndex < adjacencyList.length; startIndex++) {
+    while (!queue.isEmpty()) {
+        const node = queue.dequeue();
+
+        bfsResult.push(node.data);
         
-        if (visited[startIndex] === 0) {
-            queue.enqueue(startIndex);
-            visited[startIndex] = 1;
-        
-            while (!queue.isEmpty()) {
-                const currentNode = queue.dequeue();
-                visited[currentNode] = 1;
-                bfsResult.push(currentNode);
-                for (const childNode of adjacencyList[currentNode]) {
-                    if (visited[childNode] === 0)
-                        queue.enqueue(childNode);
-                }
-            }
+        if (node.left) {
+            queue.enqueue(node.left);
+        }
+
+        if (node.right) {
+            queue.enqueue(node.right);
         }
     }
 
