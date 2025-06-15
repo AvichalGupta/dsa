@@ -1,45 +1,41 @@
 // Space Complexity: 
 // Time Complexity: 
 export class LinkedListNode<T> {
-    public data: T;
-    public left: LinkedListNode<T> | null;
-    public right: LinkedListNode<T> | null;
+    private data: T;
+    private left: LinkedListNode<T> | null;
+    private right: LinkedListNode<T> | null;
 
     constructor(data: T) {
         this.data = data;
         this.left = null;
         this.right = null;
     }
-}
 
-export class LinkedListBasedBinaryTree<T> {
-    private head: LinkedListNode<T>;
-
-    constructor(val: T) {
-        this.head = new LinkedListNode(val);
+    public setRightChild(val: LinkedListNode<T> | T | null) {
+        if (val instanceof LinkedListNode) {
+            this.right = val;
+        } else if (val) {
+            this.right = new LinkedListNode<T>(val);
+        }
     }
 
-    public getRoot() {
-        return this.head;
+    public setLeftChild(val: LinkedListNode<T> | T | null) {
+        if (val instanceof LinkedListNode) {
+            this.left = val;
+        } else if (val) {
+            this.left = new LinkedListNode<T>(val);
+        }
     }
 
-    public setRoot(val: T) {
-        this.head = new LinkedListNode<T>(val);
+    public getRightChild() {
+        return this.right;
     }
 
-    public setRightChild(node: LinkedListNode<T>, val: T) {
-        node.right = new LinkedListNode<T>(val);
-    }
+    public getLeftChild() {
+        return this.left;
+    }  
 
-    public setLeftChild(node: LinkedListNode<T>, val: T) {
-        node.left = new LinkedListNode<T>(val);
+    public getData(): T {
+        return this.data;
     }
-
-    public getRightChild(node: LinkedListNode<T>) {
-        return node.right;
-    }
-
-    public getLeftChild(node: LinkedListNode<T>) {
-        return node.left;
-    }   
 }

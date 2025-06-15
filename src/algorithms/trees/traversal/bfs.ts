@@ -1,23 +1,26 @@
 import { Queue } from "../../../datastructures/typescript/queues/queue";
-import { LinkedListBasedBinaryTree, LinkedListNode } from "../../../datastructures/typescript/trees/binary-tree/linked-list-based-tree";
+import { LinkedListNode } from "../../../datastructures/typescript/trees/binary-tree/linked-list-based-tree";
 
-export function breadthFirstSearch<T>(tree: LinkedListBasedBinaryTree<T>): T[] {
+export function breadthFirstSearch<T>(root: LinkedListNode<T>): T[] {
     
     const queue = new Queue<LinkedListNode<T>>();
-    queue.enqueue(tree.getRoot());
+    queue.enqueue(root);
     const bfsResult = new Array<T>();
+    let tempNode: LinkedListNode<T> | null = null;
 
     while (!queue.isEmpty()) {
+       
         const node = queue.dequeue();
-
-        bfsResult.push(node.data);
+        bfsResult.push(node.getData());
         
-        if (node.left) {
-            queue.enqueue(node.left);
+        tempNode = node.getLeftChild();
+        if (tempNode) {
+            queue.enqueue(tempNode);
         }
 
-        if (node.right) {
-            queue.enqueue(node.right);
+        tempNode = node.getRightChild();
+        if (tempNode) {
+            queue.enqueue(tempNode);
         }
     }
 

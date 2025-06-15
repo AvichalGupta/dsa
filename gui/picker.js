@@ -62,16 +62,9 @@ function getFiles() {
     const folderTree = new Node('dist', OUTPUT_PATH);
     createFolderTree(folderTree);
 
-    let foldersAndFilesNames = [{ 
-        name: folderTree.getName(), 
-        parentsChildCount: 0, 
-        depth: folderTree.getDepth(), 
-        currentNodeChildCount: folderTree.getChildren().length, 
-        isFile: folderTree.getType() === 'file',
-        path: folderTree.getPath()
-    }];
+    const foldersAndFilesNames = [];
 
-    const stack = [...folderTree.getChildren().map((val) => [val, folderTree.getChildren().length])];
+    const stack = [[folderTree, 0]];
     let node = null;
     let parentChildCount = 0;
     let parentNode = null;
@@ -121,8 +114,8 @@ function draw(node, addHighlight = false) {
             for (let i = 0; i < node.depth; i++) {
                 tempStr += '  ';
             }
-            tempStr += '\x1b[32;1m/' + node.name + '\x1b[0m'
         }
+        tempStr += '\x1b[32;1m/' + node.name + '\x1b[0m'
     } else {
         tempStr += '\n';
         for (let i = 0; i < node.depth; i++) {

@@ -8,7 +8,7 @@
         "esModuleInterop": true,              // Enable interoperability between CommonJS and ES Modules
         "forceConsistentCasingInFileNames": true,  // Disallow inconsistently-cased references to the same file
         "skipLibCheck": true       ,           // Skip type checking of all declaration files (*.d.ts)
-        "lib": ["ES2017","DOM"],
+        "lib": ["ES2024","DOM"],
         "moduleResolution":"node"
     },
     "include": [
