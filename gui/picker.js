@@ -4,16 +4,16 @@ const process = require('process');
 const readline = require('readline');
 const { spawn } = require('child_process');
 const OUTPUT_PATH = path.resolve(__dirname, '..', 'dist')
-
 class Node {
     name;
+    path;
     children;
     depth;
     type;
     constructor(name, path, depth = 0, isFile = false) {
         this.name = name;
         this.path = path;
-        this.depth = depth
+        this.depth = depth;
         this.children = [];
         this.type = !isFile ? 'folder' : 'file';
     }
@@ -56,7 +56,6 @@ function createFolderTree(folderTreeNode) {
         }
     }
 }
-    
 
 function getFiles() {
     const folderTree = new Node('dist', OUTPUT_PATH);

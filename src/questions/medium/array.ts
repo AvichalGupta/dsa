@@ -478,7 +478,7 @@ function findMajorityElementX(inputArr: number[], X: number) {
 function findAllUniquePaths(rowLen: number, colLen: number) {
 
     // Time Complexity: O(n)
-    // Space Complexity: O(1)
+    // Space Complexity: O(n)
     function solution1() {
         // brute force recursion - This approach perfroms 2 operations at every square (go right and go down), it will re-visit already visited squares.
         function recurse(rowVal = 0, colVal = 0): number {

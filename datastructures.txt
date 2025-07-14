@@ -1,0 +1,127 @@
+─────────────────────────────────────────────
+DATA-STRUCTURE LANDSCAPE (2025 EDITION)
+─────────────────────────────────────────────
+
+I. FUNDAMENTAL LINEAR CONTAINERS
+  • Array / Dynamic Array (Vector)
+  • Linked-List (Singly, Doubly, XOR, Skip-Pointers)
+  • Stack  – LIFO
+  • Queue  – FIFO, Deque, Circular Buffer, Ring Queue
+  • Rope / Gap Buffer (text editors)
+  • Bitset / Bitmap / Bit-Vector
+
+II. PRIORITY & ORDERED QUEUES
+  • Binary Heap                 – min/max
+  • d-ary Heap, Pairing Heap, Leftist Heap
+  • Fibonacci / Brodal / Binomial Heap
+  • Skew Heap, Binary Skew Heap
+  • Hollow Heap, Pairing-based “Violin” Heap
+  • Calendar Queue / Bucket Queue (integer keys)
+  • Smooth Heap (research, 2017+)
+
+III. HASH-BASED & DICTIONARY STRUCTURES
+  • Hash Table (chaining, open addressing, Cuckoo, Hopscotch)
+  • Ordered Hash Map (LinkedHash, Robin Hood)
+  • Hash Trie / HAMT (persistent maps in Clojure, Scala, Rust)
+  • Bloom Filter, Cuckoo Filter, Quotient Filter – prob. membership
+  • Bloomier Filter, XOR Filter
+  • HyperLogLog, Count-Min Sketch – streaming cardinality / freq
+  • Perfect Hashing (FKS, CHD)
+
+IV. BALANCED & SELF-ADJUSTING TREES
+  • AVL Tree
+  • Red–Black Tree
+  • Splay Tree
+  • Treap / Cartesian Tree (randomized)
+  • Scapegoat Tree, Weight-Balanced Tree
+  • AA-Tree, WAVL Tree
+  • B-Tree, B+ Tree, B* Tree
+  • 2-3-4 Tree, (a,b)-Tree
+  • Ropes (augmenting balanced trees for text)
+  • Segment & Fenwick (BIT) Trees – range queries
+  • Interval / Order-Statistic / Priority Search Trees
+  • Cartesian Segment Tree, Wavelet Tree
+  • Van Emde Boas / Y-Fast / X-Fast Trie – integer keys
+  • Log-Structured Merge-Tree (LSM) – write-optimised storage
+  • Cache-Oblivious B-Tree, Fractal Tree (Tokutek)
+
+V. TRIES & STRING/SEQUENCE INDICES
+  • Trie / Radix Tree / Patricia
+  • Ternary Search Tree
+  • Suffix Tree & Generalised Suffix Tree
+  • Suffix Array, Enhanced SA, FM-Index
+  • Directed Acyclic Word Graph (DAWG), Double-Array Trie
+  • Compact Directed Acyclic Word Graph (CDAWG)
+  • Aho–Corasick Automaton, Morris–Pratt / KMP automata
+
+VI. SPATIAL & GEOMETRIC INDEXES
+  • k-d Tree, k-d-B Tree
+  • Quad-Tree, Oct-Tree
+  • R-Tree, R*-Tree, R+-Tree
+  • BSP Tree (graphics), Binary Space Partition
+  • BVH – Bounding-Volume Hierarchy
+  • Range Tree, KD-Range, Fenwick-2D
+  • Cover Tree, Ball Tree, VP-Tree (metric spaces)
+
+VII. GRAPHS & CONNECTIVITY
+  • Adjacency List / Matrix / CSR (compressed sparse row)
+  • Disjoint-Set Union (Union–Find, DSU)
+  • Link–Cut Tree, Euler Tour Tree (dynamic forests)
+  • Sparse Table (RMQ) & Binary Lifting tables
+  • Fibonacci Heap / Pairing Heap (for Dijkstra’s PQ)
+
+VIII. PERSISTENT & FUNCTIONAL STRUCTURES
+  • Persistent Vector / List (Clojure, Haskell’s Seq)
+  • Self-Balancing Persistent Maps (HAMT, AVL, RB with path copying)
+  • Finger Trees (lazy concatenation, used for RWS in Haskell)
+  • RRB-Tree (Relaxed Radix Balanced, Clojure 1.7+)
+
+IX. CONCURRENT & LOCK-FREE
+  • Concurrent Skip List (Java, .NET)
+  • Lock-Free Queue (Michael–Scott), Stack (Treiber)
+  • Read-Copy-Update (RCU) hash tables
+  • Bw-Tree (Hekaton), Mass-Tree, Adaptive Radix Tree (ART)
+  • LMAX Disruptor Ring Buffer
+
+X. STREAMING / APPROXIMATE
+  • Reservoir Sampling, Priority Sampling
+  • Theta Sketch (DataSketches), PCSA
+  • Count Sketch, Misra–Gries heavy-hitters
+  • Exponential Histogram, Sliding-Window Sketches
+
+XI. CRYPTOGRAPHIC / AUDIT
+  • Merkle Tree, Sparse Merkle Tree
+  • Merkle Patricia Trie (Ethereum)
+  • Verkle Tree, Jellyfish (research for blockchains)
+
+XII. VERSIONING & COLLABORATION (CRDT/OT)
+  • OR-Set, G-Counter, PN-Counter, LWW-Element-Set
+  • RGA / WOOT / Logoot (sequence CRDTs)
+  • Yjs & Automerge structs (conflict-free JSON trees)
+  • Operational-Transform Buffer (OT) trees
+
+XIII. SPECIALISED / DOMAIN-SPECIFIC
+  • Decision Tree, Random Forest (ML model, but tree DS)
+  • kd-Array (GPU), Sparse Voxel Octree (graphics)
+  • Bloom Join Index (databases), ZoneMap
+  • UnionBV / Bit Sliced Index (OLAP)
+  • BP-Tree, B-MDDR (spatial, database research)
+  • Prefix-Sum Tree (Fenwick derivative for partial sums)
+  • G-Trie (motif mining), HiCuts / HyperCuts (packet classification)
+
+─────────────────────────────────────────────
+Cheat-sheet usage tips
+─────────────────────────────────────────────
+• **Interviews:** Know arrays, linked lists, heaps, balanced BSTs,
+  hash maps, tries, graphs, Union–Find, segment trees, Bloom filters,
+  LRU cache (hash + linked list).
+• **Systems / DB work:** Master B-trees, LSM-trees, ART, R-trees,
+  sketches (HLL, CM), and lock-free queues.
+• **Big-data / streams:** Sketches, Bloom/Cuckoo filters,
+  reservoir sampling.
+• **Blockchain / audit:** Merkle / Sparse Merkle / Verkle trees.
+• **Real-time collaboration:** CRDT sets & sequence trees.
+
+No list can be literally exhaustive—researchers invent new hybrids every year—but the catalogue above covers the structures you’re most likely to encounter in production codebases, academic papers, and technical interviews as of 2025.
+
+Courtesy of ChatGPT

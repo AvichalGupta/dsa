@@ -1,5 +1,5 @@
-import { Stack } from "../../../datastructures/typescript/stacks/stack";
-import { LinkedListNode } from "../../../datastructures/typescript/trees/binary-tree/linked-list-based-tree";
+import { Stack } from "../../../../datastructures/typescript/stacks/stack";
+import { LinkedListNode } from "../../../../datastructures/typescript/trees/binary-tree/linked-list-based-tree";
 
 export function depthFirstSearch<T>(root: LinkedListNode<T>): T[] {
     

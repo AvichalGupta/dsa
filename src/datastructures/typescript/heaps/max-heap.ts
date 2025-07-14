@@ -55,26 +55,26 @@ class MaxHeap<T> {
         const length = this.heap.length;
         let leftChildIndex: number;
         let rightChildIndex: number;
-        let largestIndex: number;
+        let smallestIndex: number;
 
         while(true) {    
             leftChildIndex = (2 * index) + 1;
             rightChildIndex = (2 * index) + 2;
     
-            largestIndex = index;
+            smallestIndex = index;
 
-            if (leftChildIndex < length && this.heap[leftChildIndex] > this.heap[largestIndex]) {
-                largestIndex = leftChildIndex;
+            if (leftChildIndex < length && this.heap[leftChildIndex] > this.heap[smallestIndex]) {
+                smallestIndex = leftChildIndex;
             }
 
-            if (rightChildIndex < length && this.heap[rightChildIndex] > this.heap[largestIndex]) {
-                largestIndex = rightChildIndex;
+            if (rightChildIndex < length && this.heap[rightChildIndex] > this.heap[smallestIndex]) {
+                smallestIndex = rightChildIndex;
             }
 
-            if (largestIndex === index) break;
+            if (smallestIndex === index) break;
 
-            this.swap(index, largestIndex);
-            index = largestIndex;
+            this.swap(index, smallestIndex);
+            index = smallestIndex;
         }        
     }
 }

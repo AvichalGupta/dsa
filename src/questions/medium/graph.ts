@@ -5,7 +5,7 @@ import { execute } from "../helper";
 // Time Complexity: O(n)
 // Space Complexity: O(n^2)
 
-function mostProfitablePath(edges: number[][], bob: number, amount: number[]) {
+function mostProfitablePath(edges: number[][], bob: number, amount: number[]): number {
     const adjacencyList: number[][] = Array.from({ length: edges.length + 1 }, () => []);
 
     for (const [u, v] of edges) {
@@ -75,4 +75,45 @@ function mostProfitablePath(edges: number[][], bob: number, amount: number[]) {
     
 }
 
-execute([[0,1],[1,2],[1,3],[3,4]], 3, [-2,4,2,-4,6], mostProfitablePath);
+// execute([[0,1],[1,2],[1,3],[3,4]], 3, [-2,4,2,-4,6], mostProfitablePath);
+
+function connectedComponents(edges: number[][]): number {
+
+    const adjacencyList: Map<number, number[]> = new Map<number, number[]>();
+
+    for (const [u, v] of edges) {
+        adjacencyList.set(u, [ ...adjacencyList.get(u) ?? [], v]);
+        adjacencyList.set(v, [ ...adjacencyList.get(v) ?? [], u]);
+    }
+
+    const visited: Set<number> = new Set<number>();
+
+    const stack: Stack<number> = new Stack<number>();
+    let tempVal: number = 0;
+    let componentsCount = 0;
+
+    for (const key of adjacencyList.keys()) {
+        
+        if (!visited.has(key)) {
+            componentsCount++;
+        }
+        
+        stack.push(key);
+        
+        while (!stack.isEmpty()) {
+            tempVal = stack.pop();
+    
+            if (!visited.has(tempVal)) {
+                visited.add(tempVal);
+                
+                for (const childNode of adjacencyList.get(tempVal) ?? []) {
+                    stack.push(childNode);
+                }
+            }
+        }
+    }
+    
+    return componentsCount;
+}
+
+execute([[0,1],[0,2],[0,3],[4,5]], connectedComponents);
