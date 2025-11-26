@@ -1,0 +1,9 @@
+Asked about Kafka,
+
+1. Assume you have maxed the number of producers and consumers on a topic, yet there is a lag. How would you debug this ?
+
+Asked about Go Sync Module, Mutext, Channels and so on.
+Asked about deadlock and how to prevent it.
+
+Coding Question:
+Create a go server that spins threads and is communicating with the main thread to return the result of execution of that thread.
