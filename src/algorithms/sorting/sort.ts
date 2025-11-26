@@ -153,7 +153,6 @@ class SortAlgorithms<T> {
             Time: O(nlog(n)), log(n) for breaking array's in half, n for merging.
             Space: O(1)
     */
-    // [5,3,1,2,6]
     public mergeSort(): T[] {
         return this.mergeSortRecurse(this.array);
     }

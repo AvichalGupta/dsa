@@ -1,6 +1,5 @@
 import { breadthFirstSearch } from "../../../algorithms/graphs/traversal/bfs";
 import { depthFirstSearch } from "../../../algorithms/graphs/traversal/dfs";
-import { Queue } from "../queues/queue";
 
 type GraphInput<T> = {
     adjacencyMatrix?: T[][];

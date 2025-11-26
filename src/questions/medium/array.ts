@@ -583,6 +583,64 @@ function twoSum(arr: number[], targetSum: number) {
 }
 // execute([1,2,3,4,5,6], 10, twoSum);
 
+function threeSum(nums: number[]) {
+    
+    // brute force
+    function solution1() {
+        const target = 0;
+        // loop over each array element, that array value must be negated or met so that the final sum is 0.
+        const twoSumMap = new Map();
+        for (let i = 0; i < nums.length; i++) {
+            for (let j = 0; j < nums.length; j++) {
+                
+                if (i === j) continue;
+
+                for (let k = j + 1; k < nums.length; k++) {
+                    if (k === i) continue;
+                    
+                    if (nums[i] + nums[j] + nums[k] !== target) continue;
+                    
+                    const existingValueFromMap = twoSumMap.get(nums[i]) || [];
+                    
+                    if (
+                        existingValueFromMap.includes(
+                            String(nums[j]) + '_' + String(nums[k])
+                        )
+                    ) continue;
+
+                    existingValueFromMap.push(
+                        String(nums[j]) + '_' + String(nums[k])
+                    )
+                    
+                    twoSumMap.set(
+                        nums[i], 
+                        existingValueFromMap
+                    );
+                }
+            }
+        }
+        
+        const finalOutput = new Set<string>();
+        for (const [key, value] of twoSumMap.entries()) {
+            for (const val of value) {
+                const splitVal = (val.split('_'));
+                splitVal.push(key)
+                splitVal.sort((a: string,b: string) => { return +a - +b });
+                finalOutput.add(splitVal.join('_'));
+            }
+        }
+
+        return Array.from(finalOutput.values()).map((val: string) => val.split('_').map(Number));
+    }
+
+    function solution2() {
+        
+    }
+    return solution1();
+}
+execute([-1,0,1,2,-1,-4], threeSum);
+
+
 // Find Max Product of an array
 // Time Complexity: O(n)
 // Space Complexity: O(1)
