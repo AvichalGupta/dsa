@@ -1,7 +1,7 @@
 // Space Complexity: 
 // Time Complexity: 
 
-class MaxHeap<T> {
+export class MaxHeap<T> {
     private heap: Array<T>;
     constructor () {
         this.heap = new Array<T>();

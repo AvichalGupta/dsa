@@ -3,7 +3,7 @@
 import { MAX_SIZE } from "../../constants";
 
 // Time Complexity: 
-class SinglyLinkedListNode<T> {
+export class SinglyLinkedListNode<T> {
     public data: T;
     public next: SinglyLinkedListNode<T> | null;
 

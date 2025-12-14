@@ -1,11 +1,13 @@
 // Space Complexity: 
 // Time Complexity: 
 
+import { MaxHeap, MinHeap } from "../heaps";
+
 enum PriorityQueueType {
     MIN = 'MIN',
     MAX = 'MAX'
 }
-class PriorityQueue<T> {
+export class PriorityQueue<T> {
     private heap: MaxHeap<T> | MinHeap<T>;
     constructor(type: PriorityQueueType) {
         if (type === PriorityQueueType.MAX) {

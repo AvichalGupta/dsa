@@ -3,7 +3,7 @@
 import { MAX_SIZE } from "../../constants";
 
 // Time Complexity: 
-class DoublyLinkedListNode<T> {
+export class DoublyLinkedListNode<T> {
     public data: T;
     public next: DoublyLinkedListNode<T> | null;
     public prev: DoublyLinkedListNode<T> | null;

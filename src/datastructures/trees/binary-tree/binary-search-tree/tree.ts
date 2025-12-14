@@ -1,4 +1,4 @@
-class TreeNode<T> {
+export class TreeNode<T> {
     value: T;
     right: TreeNode<T> | null;
     left: TreeNode<T> | null;
@@ -9,7 +9,7 @@ class TreeNode<T> {
     }
 }
 
-class BinarySearchTree<T> {
+export class BinarySearchTree<T> {
     bst: TreeNode<T> | null;
     constructor() {
         this.bst = null;

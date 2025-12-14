@@ -1,7 +1,7 @@
 // Space Complexity: 
 // Time Complexity: 
 
-class MinHeap<T> {
+export class MinHeap<T> {
     private heap: Array<T>;
     constructor () {
         this.heap = new Array<T>();

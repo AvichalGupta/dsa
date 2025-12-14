@@ -3,7 +3,7 @@
 import { MAX_SIZE } from "../../../constants";
 
 // Time Complexity: 
-class CircularSinglyLinkedListNode<T> {
+export class CircularSinglyLinkedListNode<T> {
     public data: T;
     public next: CircularSinglyLinkedListNode<T> | null;
 
