@@ -21,8 +21,7 @@
     "url": "https://github.com/AvichalGupta/dsa/issues"
   },
   "homepage": "https://github.com/AvichalGupta/dsa#readme",
-  "devDependencies": {
-    "@types/node": "^24.0.0",
-    "dts-bundle-generator": "^9.5.1"
+  "dependencies": {
+    "typescript": "^5.9.3"
   }
 }
