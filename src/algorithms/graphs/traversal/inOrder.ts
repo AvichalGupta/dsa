@@ -1,4 +1,4 @@
-import { ArrayBasedBinaryTree } from "../../../datastructures/typescript/trees/binary-tree/array-based-tree";
+import { ArrayBasedBinaryTree } from "../../../datastructures/trees/binary-tree/array-based-tree";
 
 export function postOrderTraversal(bTree: ArrayBasedBinaryTree<number>, nodeIndex: number, resultArr: number[]) {
     const data = bTree.getData(nodeIndex);

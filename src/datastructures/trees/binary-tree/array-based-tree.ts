@@ -1,4 +1,4 @@
-import { MAX_SIZE } from "../../../../constants";
+import { MAX_SIZE } from "../../../constants";
 
 // Space Complexity: 
 // Time Complexity: 

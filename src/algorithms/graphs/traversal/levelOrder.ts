@@ -1,4 +1,4 @@
-import { ArrayBasedBinaryTree } from "../../../datastructures/typescript/trees/binary-tree/array-based-tree";
+import { ArrayBasedBinaryTree } from "../../../datastructures/trees/binary-tree/array-based-tree";
 
 export function levelOrderTraversal(bTree: ArrayBasedBinaryTree<number>): number[] {
     

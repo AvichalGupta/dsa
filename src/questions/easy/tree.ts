@@ -1,7 +1,7 @@
-import { Queue } from "../../datastructures/typescript/queues/queue";
-import { Stack } from "../../datastructures/typescript/stacks/stack";
-import { LinkedListNode } from "../../datastructures/typescript/trees/binary-tree/linked-list-based-tree";
-import { LinkedListNode as NaryNode }from "../../datastructures/typescript/trees/n-ary-tree/linked-list-based-tree";
+import { Queue } from "../../datastructures/queues/queue";
+import { Stack } from "../../datastructures/stacks/stack";
+import { LinkedListNode } from "../../datastructures/trees/binary-tree/linked-list-based-tree";
+import { LinkedListNode as NaryNode }from "../../datastructures/trees/n-ary-tree/linked-list-based-tree";
 import { executeNaryTree, executeTree, executeTreeFromEdges, executeNaryTreeFromEdges } from "../helper";
 
 // Inverting a binary tree.

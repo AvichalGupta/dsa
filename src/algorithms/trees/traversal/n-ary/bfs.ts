@@ -1,5 +1,5 @@
-import { Queue } from "../../../../datastructures/typescript/queues/queue";
-import { LinkedListNode } from "../../../../datastructures/typescript/trees/n-ary-tree/linked-list-based-tree";
+import { Queue } from "../../../../datastructures/queues/queue";
+import { LinkedListNode } from "../../../../datastructures/trees/n-ary-tree/linked-list-based-tree";
 
 export function breadthFirstSearch<T>(root: LinkedListNode<T>): T[][] {    
     const queue = new Queue<LinkedListNode<T>>();

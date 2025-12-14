@@ -1,4 +1,4 @@
-import { LinkedListNode } from "../../datastructures/typescript/trees/binary-tree/linked-list-based-tree";
+import { LinkedListNode } from "../../datastructures/trees/binary-tree/linked-list-based-tree";
 import { executeTree } from "../helper";
 
 function cloneNaryTree(root: LinkedListNode<number>): LinkedListNode<number> {
