@@ -1,7 +1,6 @@
-// Space Complexity: 
-
 import { MAX_SIZE } from "../../constants";
 
+// Space Complexity: 
 // Time Complexity: 
 export class DoublyLinkedListNode<T> {
     public data: T;
