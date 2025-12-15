@@ -1,1 +1,1 @@
-export const MAX_SIZE = 100_000;
+export const MAX_SIZE = Number.MAX_SAFE_INTEGER;

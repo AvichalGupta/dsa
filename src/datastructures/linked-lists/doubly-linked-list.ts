@@ -3,172 +3,187 @@ import { MAX_SIZE } from "../../constants";
 // Space Complexity: 
 // Time Complexity: 
 export class DoublyLinkedListNode<T> {
-    public data: T;
+    public data: T | null;
     public next: DoublyLinkedListNode<T> | null;
     public prev: DoublyLinkedListNode<T> | null;
 
-    constructor(data: T) {
+    constructor(data: T | null) {
         this.data = data;
         this.next = null;
         this.prev = null;
     }
 }
 
-export class DoublyLinkedList<T> {
-    private head: DoublyLinkedListNode<T> | null;
-    private tail: DoublyLinkedListNode<T> | null;
-    private maxSize: number;
+export type DoublyLinkedListOptions = {
+    maxSize: number
+    failSilently: boolean
+}
+
+export class PrimitiveDoublyLinkedList<T> {
+    private readonly head: DoublyLinkedListNode<T>;
+    private readonly tail: DoublyLinkedListNode<T>;
+    private readonly options: Readonly<DoublyLinkedListOptions>;
     private currentSize: number;
 
-    constructor(maxSize?: number) {
-        this.head = null;
-        this.tail = null;
-        this.maxSize = maxSize || MAX_SIZE;
+    constructor(ops?: DoublyLinkedListOptions) {
+        this.head = new DoublyLinkedListNode<T>(null);
+        this.tail = new DoublyLinkedListNode<T>(null);
+        this.head.next = this.tail;
+        this.tail.prev = this.head;
+        this.options = {
+            maxSize: ops?.maxSize ?? MAX_SIZE,
+            failSilently: ops?.failSilently ?? false,
+        };
         this.currentSize = 0;
     }
 
-    private findNodeByIndex(index: number): DoublyLinkedListNode<T> {
-        let currentNode = this.head;
-        for (let currentPosition = 0; currentPosition <= index; currentPosition++) {
-            currentNode = currentNode!.next;
+    public pushToFront(newNode: DoublyLinkedListNode<T>): boolean {
+        if (this.currentSize >= this.options.maxSize) {
+            throw new Error('Overflow!')
         }
-        return currentNode!;
+
+        if (newNode.prev !== null || newNode.next !== null) {
+            throw new Error("Node is already linked");
+        }
+
+        const headNext = this.head.next;
+        
+        newNode.prev = this.head;
+        newNode.next = headNext;
+        
+        this.head.next = newNode;
+
+        if (headNext) {
+            headNext.prev = newNode;
+        }
+
+        if (this.tail.prev === this.head) {
+            this.tail.prev = newNode;
+        }
+        
+        this.currentSize += 1;
+
+        return true;
     }
 
-    public appendAtStart(data: T): void {
-        this.append(data, 0);
-    }
+    popFromFront(): DoublyLinkedListNode<T> | null {
+        if (this.head.next === this.tail) {
+            throw new Error('Underflow!')
+        }
 
-    public appendAtEnd(data: T): void {
-        this.append(data, this.size() - 1);
-    }
+        const poppedNode = this.head.next;
 
-    public appendAtPosition(data: T, index: number): void {
-        this.append(data, index);
-    }
-
-    public removeAtStart(): T {
-        return this.remove(0);
-    }
-
-    public removeAtEnd(): T {
-        return this.remove(this.size() - 1);
-    }
-
-    public removeAtPosition(index: number): T {
-        return this.remove(index);
-    }
-
-    public append(data: T, index: number): void {
-        if (this.isFull()) throw new Error('Doubly Linked List Overflow');
-
-        const newNode = new DoublyLinkedListNode(data);
-
-        if (!this.head || !this.tail) {
-            this.head = this.tail = newNode;
-        } else {
-            if (index === 0) {
-                // Insert at start
-                newNode.next = this.head;
-                this.head.prev = newNode;
-                this.head = newNode;
-            } else if (index = this.size() - 1) {
-                // Insert at end
-                newNode.prev = this.tail;
-                this.tail.next = newNode;
-                this.tail = newNode;
-            } else {
-                // Insert at index
-                if (index < 0 || index >= this.size()) throw new Error('Index out of bounds')
-                const currentNode = this.findNodeByIndex(index);
-
-                newNode.prev = currentNode.prev;
-                newNode.next = currentNode;
-                currentNode.prev!.next = newNode;
-                currentNode.prev = newNode;
+        if (poppedNode) {
+            const tempNode = poppedNode.next;
+    
+            this.head.next = tempNode;
+    
+            if (this.head.next === this.tail) {
+                this.tail.prev = this.head;
+            } else if (tempNode) {
+                tempNode.prev = this.head;
             }
-        }
-        this.currentSize++;
-    }
 
-    public remove(index: number): T {
-        if (this.isEmpty()) throw new Error('Doubly Linked List Underflow');
+            poppedNode.next = poppedNode.prev = null;
 
-        let poppedValue: T;
-        if (this.size() === 1) {
-            poppedValue = this.head!.data;
-            this.head = this.tail = null;
-        } else if (index === 0) {
-            // Remove at start
-            poppedValue = this.head!.data;
-            this.head = this.head!.next;
-            this.head!.prev = null;
-        } else if (index === this.size() - 1) {
-            // Remove at end
-            poppedValue = this.tail!.data;
-            this.tail = this.tail!.prev;
-            this.tail!.next = null;
-        } else {
-            // Remove at index
-            if (index < 0 || index >= this.size()) throw new Error('Index out of bounds')
-            const currentNode = this.findNodeByIndex(index);
-            poppedValue = currentNode!.data;
-            currentNode.prev!.next = currentNode.next;
-            currentNode.next!.prev = currentNode.prev;
-        }
-        this.currentSize--;
-        return poppedValue;
-    }
-
-    public peek(index: number) {
-        if (this.isEmpty()) throw new Error('Doubly Linked List Underflow');
-
-        if (index === 0) {
-            // Peel from start
-            return this.head!.data;
-        } else if (index === this.size() - 1) {
-            // Peek from end
-            return this.tail!.data;
-        } else {
-            // Peek at index
-            if (index < 0 || index >= this.size()) throw new Error('Index out of bounds')
-            return this.findNodeByIndex(index).data;
-        }
-    }
-
-    public print(): void {
-        if (this.isEmpty()) throw new Error('Singly Linked List Underflow');
-        let currentNode = this.head;
-
-        const valuesArr: Array<T> = [currentNode!.data];
-
-        while(currentNode!.next) {
-            valuesArr.push(currentNode!.data);
-            currentNode = currentNode!.next;
+            this.currentSize -= 1;
         }
 
-        console.log('Singly Linked List Values: ', valuesArr);
+        return poppedNode;
     }
 
-    public size(): number {
+    pushToBack(newNode: DoublyLinkedListNode<T>): boolean {
+        if (this.currentSize >= this.options.maxSize) {
+            throw new Error('Overflow!')
+        }
+
+        if (newNode.prev !== null || newNode.next !== null) {
+            throw new Error("Node is already linked");
+        }
+        
+        const tailPrev = this.tail.prev;
+
+        newNode.next = this.tail;
+        newNode.prev = tailPrev;
+
+        this.tail.prev = newNode;
+
+        if (tailPrev) {
+            tailPrev.next = newNode;
+        }
+
+        if (this.head.next === this.tail) {
+            this.head.next = newNode;
+        }
+        
+        this.currentSize += 1;
+
+        return true;
+    }
+
+    popFromBack(): DoublyLinkedListNode<T> | null {
+        if (this.tail.prev === this.head) {
+            throw new Error('Underflow!')
+        }
+
+        const poppedNode = this.tail.prev;
+
+        if (poppedNode) {
+            const tempNode = poppedNode.prev;
+    
+            this.tail.prev = tempNode;
+    
+            if (this.tail.prev === this.head) {
+                this.head.next = this.tail;
+            } else if (tempNode) {
+                tempNode.next = this.tail;
+            }
+
+            poppedNode.next = poppedNode.prev = null;
+            
+            this.currentSize -= 1;
+        }
+
+        return poppedNode;
+    }
+
+    getSize(): number {
         return this.currentSize;
     }
+}
 
-    public isEmpty(): boolean {
-        return this.size() === 0;
+export class ValueBasedDoublyLinkedList<T>{
+    private primitiveDoublyLinkedList: PrimitiveDoublyLinkedList<T>;
+    constructor(ops?: DoublyLinkedListOptions) {
+        this.primitiveDoublyLinkedList = new PrimitiveDoublyLinkedList<T>(ops);
     }
 
-    public isFull(): boolean {
-        return this.size() >= this.maxSize;
+    pushToFront(value: T): boolean {
+        return this.primitiveDoublyLinkedList.pushToFront(new DoublyLinkedListNode<T>(value));
     }
 
-    public clear(): void {
-        this.head = this.tail = null;
-    }
+    popFromFront(): T | null {
+        const poppedNode = this.primitiveDoublyLinkedList.popFromFront();
 
-    *[Symbol.iterator]() {
-        for (let node = this.head; node; node = node.next) {
-            yield node;
+        if (poppedNode) {
+            return poppedNode.data;
         }
+
+        return null;
     }
+
+    pushToBack(value: T): boolean {
+        return this.primitiveDoublyLinkedList.pushToBack(new DoublyLinkedListNode<T>(value));
+    }
+
+    popFromBack(): T | null {
+        const poppedNode = this.primitiveDoublyLinkedList.popFromBack();
+
+        if (poppedNode) {
+            return poppedNode.data;
+        }
+
+        return null;
+    }
+
 }
