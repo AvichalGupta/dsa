@@ -1,6 +1,6 @@
 {
   "name": "@avichal-gupta/dsa",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A repo filled with all sorts of datastructures, algorithms and practice questions. Intended to be used as a recap for interview prep.",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
