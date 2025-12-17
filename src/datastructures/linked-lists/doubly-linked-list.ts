@@ -2,7 +2,7 @@ import { MAX_SIZE } from "../../constants";
 
 // Space Complexity: 
 // Time Complexity: 
-export class DoublyLinkedListNode<T> {
+class DoublyLinkedListNode<T> {
     public data: T | null;
     public next: DoublyLinkedListNode<T> | null;
     public prev: DoublyLinkedListNode<T> | null;
@@ -16,7 +16,6 @@ export class DoublyLinkedListNode<T> {
 
 export type DoublyLinkedListOptions = {
     maxSize: number
-    failSilently: boolean
 }
 
 export class PrimitiveDoublyLinkedList<T> {
@@ -31,13 +30,12 @@ export class PrimitiveDoublyLinkedList<T> {
         this.head.next = this.tail;
         this.tail.prev = this.head;
         this.options = {
-            maxSize: ops?.maxSize ?? MAX_SIZE,
-            failSilently: ops?.failSilently ?? false,
+            maxSize: ops?.maxSize ?? MAX_SIZE
         };
         this.currentSize = 0;
     }
 
-    public pushToFront(newNode: DoublyLinkedListNode<T>): boolean {
+    pushToFront(newNode: DoublyLinkedListNode<T>): void {
         if (this.currentSize >= this.options.maxSize) {
             throw new Error('Overflow!')
         }
@@ -63,7 +61,6 @@ export class PrimitiveDoublyLinkedList<T> {
         
         this.currentSize += 1;
 
-        return true;
     }
 
     popFromFront(): DoublyLinkedListNode<T> | null {
@@ -92,7 +89,7 @@ export class PrimitiveDoublyLinkedList<T> {
         return poppedNode;
     }
 
-    pushToBack(newNode: DoublyLinkedListNode<T>): boolean {
+    pushToBack(newNode: DoublyLinkedListNode<T>): void {
         if (this.currentSize >= this.options.maxSize) {
             throw new Error('Overflow!')
         }
@@ -118,7 +115,6 @@ export class PrimitiveDoublyLinkedList<T> {
         
         this.currentSize += 1;
 
-        return true;
     }
 
     popFromBack(): DoublyLinkedListNode<T> | null {
@@ -150,6 +146,10 @@ export class PrimitiveDoublyLinkedList<T> {
     getSize(): number {
         return this.currentSize;
     }
+
+    getOptions(): DoublyLinkedListOptions {
+        return this.options;
+    }
 }
 
 export class ValueBasedDoublyLinkedList<T>{
@@ -158,8 +158,8 @@ export class ValueBasedDoublyLinkedList<T>{
         this.primitiveDoublyLinkedList = new PrimitiveDoublyLinkedList<T>(ops);
     }
 
-    pushToFront(value: T): boolean {
-        return this.primitiveDoublyLinkedList.pushToFront(new DoublyLinkedListNode<T>(value));
+    pushToFront(value: T): void {
+        this.primitiveDoublyLinkedList.pushToFront(new DoublyLinkedListNode<T>(value));
     }
 
     popFromFront(): T | null {
@@ -172,8 +172,8 @@ export class ValueBasedDoublyLinkedList<T>{
         return null;
     }
 
-    pushToBack(value: T): boolean {
-        return this.primitiveDoublyLinkedList.pushToBack(new DoublyLinkedListNode<T>(value));
+    pushToBack(value: T): void {
+        this.primitiveDoublyLinkedList.pushToBack(new DoublyLinkedListNode<T>(value));
     }
 
     popFromBack(): T | null {
@@ -184,6 +184,14 @@ export class ValueBasedDoublyLinkedList<T>{
         }
 
         return null;
+    }
+
+    getSize(): number {
+        return this.getSize();
+    }
+
+    getOptions(): DoublyLinkedListOptions {
+        return this.getOptions();
     }
 
 }
