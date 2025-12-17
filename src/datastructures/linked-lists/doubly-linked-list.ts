@@ -1,16 +1,19 @@
-import { MAX_SIZE } from "../../constants";
+import { MAX_SIZE } from '../../constants';
 
 // Space Complexity: 
 // Time Complexity: 
-class DoublyLinkedListNode<T> {
+
+export interface DoublyLinkedListNode<T> {
+    readonly data: T | null;
+}
+
+class InternalDoublyLinkedListNode<T> implements DoublyLinkedListNode<T> {
     public data: T | null;
-    public next: DoublyLinkedListNode<T> | null;
-    public prev: DoublyLinkedListNode<T> | null;
+    public next: InternalDoublyLinkedListNode<T> | null = null;
+    public prev: InternalDoublyLinkedListNode<T> | null = null;
 
     constructor(data: T | null) {
         this.data = data;
-        this.next = null;
-        this.prev = null;
     }
 }
 
@@ -18,15 +21,15 @@ export type DoublyLinkedListOptions = {
     maxSize: number
 }
 
-export class PrimitiveDoublyLinkedList<T> {
-    private readonly head: DoublyLinkedListNode<T>;
-    private readonly tail: DoublyLinkedListNode<T>;
+export class DoublyLinkedList<T> {
+    private readonly head: InternalDoublyLinkedListNode<T>;
+    private readonly tail: InternalDoublyLinkedListNode<T>;
     private readonly options: Readonly<DoublyLinkedListOptions>;
     private currentSize: number;
 
     constructor(ops?: DoublyLinkedListOptions) {
-        this.head = new DoublyLinkedListNode<T>(null);
-        this.tail = new DoublyLinkedListNode<T>(null);
+        this.head = new InternalDoublyLinkedListNode<T>(null);
+        this.tail = new InternalDoublyLinkedListNode<T>(null);
         this.head.next = this.tail;
         this.tail.prev = this.head;
         this.options = {
@@ -35,13 +38,15 @@ export class PrimitiveDoublyLinkedList<T> {
         this.currentSize = 0;
     }
 
-    pushToFront(newNode: DoublyLinkedListNode<T>): void {
+    pushToFront(value: T): DoublyLinkedListNode<T> {
         if (this.currentSize >= this.options.maxSize) {
-            throw new Error('Overflow!')
+            throw new Error('Overflow!');
         }
 
+        const newNode = new InternalDoublyLinkedListNode<T>(value);
+
         if (newNode.prev !== null || newNode.next !== null) {
-            throw new Error("Node is already linked");
+            throw new Error('Node is already linked');
         }
 
         const headNext = this.head.next;
@@ -61,41 +66,43 @@ export class PrimitiveDoublyLinkedList<T> {
         
         this.currentSize += 1;
 
+        return newNode;
+
     }
 
-    popFromFront(): DoublyLinkedListNode<T> | null {
+    popFromFront(): DoublyLinkedListNode<T> {
         if (this.head.next === this.tail) {
             throw new Error('Underflow!')
         }
 
-        const poppedNode = this.head.next;
+        const poppedNode = this.head.next!;
 
-        if (poppedNode) {
-            const tempNode = poppedNode.next;
+        const tempNode = poppedNode.next;
     
-            this.head.next = tempNode;
-    
-            if (this.head.next === this.tail) {
-                this.tail.prev = this.head;
-            } else if (tempNode) {
-                tempNode.prev = this.head;
-            }
+        this.head.next = tempNode;
 
-            poppedNode.next = poppedNode.prev = null;
-
-            this.currentSize -= 1;
+        if (this.head.next === this.tail) {
+            this.tail.prev = this.head;
+        } else if (tempNode) {
+            tempNode.prev = this.head;
         }
+
+        poppedNode.next = poppedNode.prev = null;
+
+        this.currentSize -= 1;
 
         return poppedNode;
     }
 
-    pushToBack(newNode: DoublyLinkedListNode<T>): void {
+    pushToBack(value: T): DoublyLinkedListNode<T> {
         if (this.currentSize >= this.options.maxSize) {
             throw new Error('Overflow!')
         }
 
+        const newNode = new InternalDoublyLinkedListNode<T>(value);
+
         if (newNode.prev !== null || newNode.next !== null) {
-            throw new Error("Node is already linked");
+            throw new Error('Node is already linked');
         }
         
         const tailPrev = this.tail.prev;
@@ -115,30 +122,30 @@ export class PrimitiveDoublyLinkedList<T> {
         
         this.currentSize += 1;
 
+        return newNode;
+
     }
 
-    popFromBack(): DoublyLinkedListNode<T> | null {
+    popFromBack(): DoublyLinkedListNode<T> {
         if (this.tail.prev === this.head) {
             throw new Error('Underflow!')
         }
 
-        const poppedNode = this.tail.prev;
+        const poppedNode = this.tail.prev!;
+        
+        const tempNode = poppedNode.prev;
 
-        if (poppedNode) {
-            const tempNode = poppedNode.prev;
-    
-            this.tail.prev = tempNode;
-    
-            if (this.tail.prev === this.head) {
-                this.head.next = this.tail;
-            } else if (tempNode) {
-                tempNode.next = this.tail;
-            }
+        this.tail.prev = tempNode;
 
-            poppedNode.next = poppedNode.prev = null;
-            
-            this.currentSize -= 1;
+        if (this.tail.prev === this.head) {
+            this.head.next = this.tail;
+        } else if (tempNode) {
+            tempNode.next = this.tail;
         }
+
+        poppedNode.next = poppedNode.prev = null;
+        
+        this.currentSize -= 1;
 
         return poppedNode;
     }
@@ -150,48 +157,4 @@ export class PrimitiveDoublyLinkedList<T> {
     getOptions(): DoublyLinkedListOptions {
         return this.options;
     }
-}
-
-export class ValueBasedDoublyLinkedList<T>{
-    private primitiveDoublyLinkedList: PrimitiveDoublyLinkedList<T>;
-    constructor(ops?: DoublyLinkedListOptions) {
-        this.primitiveDoublyLinkedList = new PrimitiveDoublyLinkedList<T>(ops);
-    }
-
-    pushToFront(value: T): void {
-        this.primitiveDoublyLinkedList.pushToFront(new DoublyLinkedListNode<T>(value));
-    }
-
-    popFromFront(): T | null {
-        const poppedNode = this.primitiveDoublyLinkedList.popFromFront();
-
-        if (poppedNode) {
-            return poppedNode.data;
-        }
-
-        return null;
-    }
-
-    pushToBack(value: T): void {
-        this.primitiveDoublyLinkedList.pushToBack(new DoublyLinkedListNode<T>(value));
-    }
-
-    popFromBack(): T | null {
-        const poppedNode = this.primitiveDoublyLinkedList.popFromBack();
-
-        if (poppedNode) {
-            return poppedNode.data;
-        }
-
-        return null;
-    }
-
-    getSize(): number {
-        return this.getSize();
-    }
-
-    getOptions(): DoublyLinkedListOptions {
-        return this.getOptions();
-    }
-
 }
