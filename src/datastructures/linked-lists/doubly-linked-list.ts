@@ -46,6 +46,7 @@ export class DoublyLinkedList<T> {
     }
 
     unlinkNode(node: DoublyLinkedListNode<T>): void {
+        
         if (!(DLL_NODE in node)) {
             throw new Error("Forged Node");
         }
@@ -67,6 +68,9 @@ export class DoublyLinkedList<T> {
         nodeNext.prev = nodePrev;
         
         internalNode.next = internalNode.prev = null;
+
+        this.currentSize -= 1;
+
     }
 
     pushToFront(value: T): DoublyLinkedListNode<T> {
