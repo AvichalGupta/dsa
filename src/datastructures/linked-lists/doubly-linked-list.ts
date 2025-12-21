@@ -29,9 +29,9 @@ export type DoublyLinkedListOptions = {
 }
 
 export class DoublyLinkedList<T> {
-    private head: InternalDoublyLinkedListNode<T>;
-    private tail: InternalDoublyLinkedListNode<T>;
-    private options: Readonly<DoublyLinkedListOptions>;
+    private readonly head: InternalDoublyLinkedListNode<T>;
+    private readonly tail: InternalDoublyLinkedListNode<T>;
+    private readonly options: Readonly<DoublyLinkedListOptions>;
     private currentSize: number;
 
     constructor(ops?: DoublyLinkedListOptions) {
@@ -194,8 +194,8 @@ export class DoublyLinkedList<T> {
     }
     
     clear() {
-        this.head = new InternalDoublyLinkedListNode<T>(null, this);
-        this.tail = new InternalDoublyLinkedListNode<T>(null, this);
+        this.head.next = this.tail;
+        this.tail.prev = this.head;
         this.currentSize = 0;
     }
 }
