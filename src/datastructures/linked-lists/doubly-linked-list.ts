@@ -2,18 +2,25 @@ import { MAX_SIZE } from '../../constants';
 
 // Space Complexity: 
 // Time Complexity: 
+const DLL_OWNER = Symbol('DLL_OWNER');
+const DLL_NODE = Symbol('DLL_NODE');
 
 export interface DoublyLinkedListNode<T> {
     readonly data: T | null;
+    readonly [DLL_NODE]: true;
 }
 
 class InternalDoublyLinkedListNode<T> implements DoublyLinkedListNode<T> {
+    readonly [DLL_NODE] = true;
+    readonly [DLL_OWNER]: DoublyLinkedList<T>;
+
     public data: T | null;
     public next: InternalDoublyLinkedListNode<T> | null = null;
     public prev: InternalDoublyLinkedListNode<T> | null = null;
 
-    constructor(data: T | null) {
+    constructor(data: T | null, owner: DoublyLinkedList<T>) {
         this.data = data;
+        this[DLL_OWNER] = owner;
     }
 }
 
@@ -28,8 +35,8 @@ export class DoublyLinkedList<T> {
     private currentSize: number;
 
     constructor(ops?: DoublyLinkedListOptions) {
-        this.head = new InternalDoublyLinkedListNode<T>(null);
-        this.tail = new InternalDoublyLinkedListNode<T>(null);
+        this.head = new InternalDoublyLinkedListNode<T>(null, this);
+        this.tail = new InternalDoublyLinkedListNode<T>(null, this);
         this.head.next = this.tail;
         this.tail.prev = this.head;
         this.options = {
@@ -38,12 +45,36 @@ export class DoublyLinkedList<T> {
         this.currentSize = 0;
     }
 
+    unlinkNode(node: DoublyLinkedListNode<T>): void {
+        if (!(DLL_NODE in node)) {
+            throw new Error("Forged Node");
+        }
+        
+        const internalNode = node as InternalDoublyLinkedListNode<T>;
+
+        if (internalNode[DLL_OWNER] !== this) {
+            throw new Error("Node does not belong to this list");
+        }
+
+        if (!internalNode.prev || !internalNode.next) {
+            throw new Error("Cannot unlink sentinel or detached node");
+        }
+        
+        const nodePrev = internalNode.prev;
+        const nodeNext = internalNode.next;
+
+        nodePrev.next = nodeNext;
+        nodeNext.prev = nodePrev;
+        
+        internalNode.next = internalNode.prev = null;
+    }
+
     pushToFront(value: T): DoublyLinkedListNode<T> {
         if (this.currentSize >= this.options.maxSize) {
             throw new Error('Overflow!');
         }
 
-        const newNode = new InternalDoublyLinkedListNode<T>(value);
+        const newNode = new InternalDoublyLinkedListNode<T>(value, this);
 
         if (newNode.prev !== null || newNode.next !== null) {
             throw new Error('Node is already linked');
@@ -99,7 +130,7 @@ export class DoublyLinkedList<T> {
             throw new Error('Overflow!')
         }
 
-        const newNode = new InternalDoublyLinkedListNode<T>(value);
+        const newNode = new InternalDoublyLinkedListNode<T>(value, this);
 
         if (newNode.prev !== null || newNode.next !== null) {
             throw new Error('Node is already linked');
