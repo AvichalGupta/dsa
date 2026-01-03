@@ -3,199 +3,221 @@ import { MAX_SIZE } from '../../constants';
 // Space Complexity: 
 // Time Complexity: 
 const DLL_OWNER = Symbol('DLL_OWNER');
-const DLL_NODE = Symbol('DLL_NODE');
 
+// This interface is exported to allow users to set types in their code explicitly if needed.
 export interface DoublyLinkedListNode<T> {
     readonly data: T | null;
-    readonly [DLL_NODE]: true;
+    getPrev(): DoublyLinkedListNode<T> | null;
+    getNext(): DoublyLinkedListNode<T> | null;
 }
 
+// This class is hidden to avoid new nodes being created outside the scope of the DLL. 
+// Nodes can only be created by the DLL and it's methods.
 class InternalDoublyLinkedListNode<T> implements DoublyLinkedListNode<T> {
-    readonly [DLL_NODE] = true;
-    readonly [DLL_OWNER]: DoublyLinkedList<T>;
+    private readonly [DLL_OWNER]: DoublyLinkedList<T>;
 
     public data: T | null;
-    public next: InternalDoublyLinkedListNode<T> | null = null;
-    public prev: InternalDoublyLinkedListNode<T> | null = null;
+    #next: InternalDoublyLinkedListNode<T> | null = null;
+    #prev: InternalDoublyLinkedListNode<T> | null = null;
 
     constructor(data: T | null, owner: DoublyLinkedList<T>) {
         this.data = data;
         this[DLL_OWNER] = owner;
     }
+
+    getNext(): InternalDoublyLinkedListNode<T> | null {
+        return this.#next;
+    }
+
+    getPrev(): InternalDoublyLinkedListNode<T> | null {
+        return this.#prev;
+    }
+
+    setNext(node: InternalDoublyLinkedListNode<T> | null, owner: DoublyLinkedList<T>): InternalDoublyLinkedListNode<T> {
+        if (this[DLL_OWNER] !== owner) {
+            throw new Error('Cannot mutate node\'s internal properties');
+        }
+        
+        this.#next = node;
+        return this;
+    }
+
+    setPrev(node: InternalDoublyLinkedListNode<T> | null, owner: DoublyLinkedList<T>): InternalDoublyLinkedListNode<T> {
+        if (this[DLL_OWNER] !== owner) {
+            throw new Error('Cannot mutate node\'s internal properties');
+        }
+        
+        this.#prev = node;
+        return this;
+    }
 }
 
 export type DoublyLinkedListOptions = {
-    maxSize: number
+    maxSize: number;
 }
 
 export class DoublyLinkedList<T> {
-    private readonly head: InternalDoublyLinkedListNode<T>;
-    private readonly tail: InternalDoublyLinkedListNode<T>;
-    private readonly options: Readonly<DoublyLinkedListOptions>;
-    private currentSize: number;
+    #head: InternalDoublyLinkedListNode<T>;
+    #tail: InternalDoublyLinkedListNode<T>;
+    #options: DoublyLinkedListOptions;
+    #currentSize: number;
 
     constructor(ops?: DoublyLinkedListOptions) {
-        this.head = new InternalDoublyLinkedListNode<T>(null, this);
-        this.tail = new InternalDoublyLinkedListNode<T>(null, this);
-        this.head.next = this.tail;
-        this.tail.prev = this.head;
-        this.options = {
+        this.#head = new InternalDoublyLinkedListNode<T>(null, this);
+        this.#tail = new InternalDoublyLinkedListNode<T>(null, this);
+        this.#head.setNext(this.#tail, this);
+        this.#tail.setPrev(this.#head, this);
+        this.#options = {
             maxSize: ops?.maxSize ?? MAX_SIZE
         };
-        this.currentSize = 0;
+        this.#currentSize = 0;
     }
 
-    unlinkNode(node: DoublyLinkedListNode<T>): void {
+    insertBefore(node: DoublyLinkedListNode<T>, value: T): DoublyLinkedListNode<T> {
         
-        if (!(DLL_NODE in node)) {
-            throw new Error("Forged Node");
+        if (this.#currentSize >= this.#options.maxSize) {
+            throw new Error('Overflow!')
         }
         
         const internalNode = node as InternalDoublyLinkedListNode<T>;
 
         if (internalNode[DLL_OWNER] !== this) {
-            throw new Error("Node does not belong to this list");
+            throw new Error('Node does not belong to this list');
         }
 
-        if (!internalNode.prev || !internalNode.next) {
-            throw new Error("Cannot unlink sentinel or detached node");
+        if (internalNode.getPrev() === null && internalNode.getNext() === null) {
+            throw new Error('Cannot link detached node');
         }
-        
-        const nodePrev = internalNode.prev;
-        const nodeNext = internalNode.next;
 
-        nodePrev.next = nodeNext;
-        nodeNext.prev = nodePrev;
-        
-        internalNode.next = internalNode.prev = null;
-
-        this.currentSize -= 1;
-
-    }
-
-    pushToFront(value: T): DoublyLinkedListNode<T> {
-        if (this.currentSize >= this.options.maxSize) {
-            throw new Error('Overflow!');
+        if (internalNode === this.#head) {
+            throw new Error('Cannot add before head');
         }
 
         const newNode = new InternalDoublyLinkedListNode<T>(value, this);
 
-        if (newNode.prev !== null || newNode.next !== null) {
-            throw new Error('Node is already linked');
+        const prevConnectedNode = internalNode.getPrev();
+
+        newNode.setNext(internalNode, this);
+
+        internalNode.setPrev(newNode, this);
+
+        if (prevConnectedNode) {
+            newNode.setPrev(prevConnectedNode, this);
+            prevConnectedNode.setNext(newNode, this);
         }
 
-        const headNext = this.head.next;
-        
-        newNode.prev = this.head;
-        newNode.next = headNext;
-        
-        this.head.next = newNode;
-
-        if (headNext) {
-            headNext.prev = newNode;
-        }
-
-        if (this.tail.prev === this.head) {
-            this.tail.prev = newNode;
-        }
-        
-        this.currentSize += 1;
+        this.#currentSize += 1;
 
         return newNode;
-
     }
 
-    popFromFront(): DoublyLinkedListNode<T> {
-        if (this.head.next === this.tail) {
-            throw new Error('Underflow!')
-        }
-
-        const poppedNode = this.head.next!;
-
-        const tempNode = poppedNode.next;
-    
-        this.head.next = tempNode;
-
-        if (this.head.next === this.tail) {
-            this.tail.prev = this.head;
-        } else if (tempNode) {
-            tempNode.prev = this.head;
-        }
-
-        poppedNode.next = poppedNode.prev = null;
-
-        this.currentSize -= 1;
-
-        return poppedNode;
-    }
-
-    pushToBack(value: T): DoublyLinkedListNode<T> {
-        if (this.currentSize >= this.options.maxSize) {
+    insertAfter(node: DoublyLinkedListNode<T>, value: T): DoublyLinkedListNode<T> {
+        
+        if (this.#currentSize >= this.#options.maxSize) {
             throw new Error('Overflow!')
         }
+        
+        const internalNode = node as InternalDoublyLinkedListNode<T>;
+
+        if (internalNode[DLL_OWNER] !== this) {
+            throw new Error('Node does not belong to this list');
+        }
+
+        if (internalNode.getPrev() === null && internalNode.getNext() === null) {
+            throw new Error('Cannot link detached node');
+        }
+
+        if (internalNode === this.#tail) {
+            throw new Error('Cannot add after tail');
+        }
 
         const newNode = new InternalDoublyLinkedListNode<T>(value, this);
 
-        if (newNode.prev !== null || newNode.next !== null) {
-            throw new Error('Node is already linked');
+        const nextConnectedNode = internalNode.getNext();
+
+        newNode.setPrev(internalNode, this);
+        internalNode.setNext(newNode, this);
+
+        if (nextConnectedNode) {
+            newNode.setNext(nextConnectedNode, this);
+            nextConnectedNode.setPrev(newNode, this);
         }
         
-        const tailPrev = this.tail.prev;
-
-        newNode.next = this.tail;
-        newNode.prev = tailPrev;
-
-        this.tail.prev = newNode;
-
-        if (tailPrev) {
-            tailPrev.next = newNode;
-        }
-
-        if (this.head.next === this.tail) {
-            this.head.next = newNode;
-        }
-        
-        this.currentSize += 1;
+        this.#currentSize += 1;
 
         return newNode;
+    }
+
+    unlinkNode(node: DoublyLinkedListNode<T>): DoublyLinkedListNode<T> {
+
+        if (this.#tail.getPrev() === this.#head || this.#head.getNext() === this.#tail) {
+            throw new Error('Underflow!')
+        }
+        
+        const internalNode = node as InternalDoublyLinkedListNode<T>;
+
+        if (internalNode[DLL_OWNER] !== this) {
+            throw new Error('Node does not belong to this list');
+        }
+
+        if (!(internalNode.getPrev() && internalNode.getNext())) {
+            throw new Error('Cannot unlink sentinel or detached node');
+        }
+        
+        const nodePrev = internalNode.getPrev();
+        const nodeNext = internalNode.getNext();
+
+        if (nodePrev && nodeNext) {
+            nodePrev.setNext(nodeNext, this);
+            nodeNext.setPrev(nodePrev, this);
+        }
+        
+        internalNode.setNext(null, this);
+        internalNode.setPrev(null, this);
+
+        this.#currentSize -= 1;
+
+        return internalNode as DoublyLinkedListNode<T>;
 
     }
 
-    popFromBack(): DoublyLinkedListNode<T> {
-        if (this.tail.prev === this.head) {
-            throw new Error('Underflow!')
-        }
+    pushAfterHead(value: T): DoublyLinkedListNode<T> {
+        return this.insertAfter(this.#head, value);
+    }
 
-        const poppedNode = this.tail.prev!;
-        
-        const tempNode = poppedNode.prev;
+    popAfterHead(): DoublyLinkedListNode<T> {
+        return this.unlinkNode(this.#head.getNext()!);
+    }
 
-        this.tail.prev = tempNode;
+    pushBeforeTail(value: T): DoublyLinkedListNode<T> {
+        return this.insertBefore(this.#tail, value);
+    }
 
-        if (this.tail.prev === this.head) {
-            this.head.next = this.tail;
-        } else if (tempNode) {
-            tempNode.next = this.tail;
-        }
+    popBeforeTail(): DoublyLinkedListNode<T> {
+        return this.unlinkNode(this.#tail.getPrev()!);
+    }
 
-        poppedNode.next = poppedNode.prev = null;
-        
-        this.currentSize -= 1;
+    peekAfterHead(): DoublyLinkedListNode<T> {
+        return this.#head.getNext() as DoublyLinkedListNode<T>;
+    }
 
-        return poppedNode;
+    peekBeforeTail(): DoublyLinkedListNode<T> {
+        return this.#tail.getPrev() as DoublyLinkedListNode<T>;
     }
 
     getSize(): number {
-        return this.currentSize;
+        return this.#currentSize;
     }
 
     getOptions(): DoublyLinkedListOptions {
-        return this.options;
+        return this.#options;
     }
     
     clear() {
-        this.head.next = this.tail;
-        this.tail.prev = this.head;
-        this.currentSize = 0;
+        this.#head = new InternalDoublyLinkedListNode<T>(null, this);
+        this.#tail = new InternalDoublyLinkedListNode<T>(null, this);
+        this.#head.setNext(this.#tail, this);
+        this.#tail.setPrev(this.#head, this);
+        this.#currentSize = 0;
     }
 }
