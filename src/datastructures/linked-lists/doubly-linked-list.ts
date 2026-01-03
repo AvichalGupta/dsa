@@ -63,6 +63,8 @@ export class DoublyLinkedList<T> {
     #currentSize: number;
 
     constructor(ops?: DoublyLinkedListOptions) {
+        if (ops?.maxSize && ops?.maxSize <= 0) throw new Error('Max size must be greater than 0')
+        
         this.#head = new InternalDoublyLinkedListNode<T>(null, this);
         this.#tail = new InternalDoublyLinkedListNode<T>(null, this);
         this.#head.setNext(this.#tail, this);
@@ -73,6 +75,9 @@ export class DoublyLinkedList<T> {
         this.#currentSize = 0;
     }
 
+    // To allow bi-directional inserts and random access pattern, this function was created. 
+    // It allows insertion before the node passed in params.
+    // It returns the newly added node
     insertBefore(node: DoublyLinkedListNode<T>, value: T): DoublyLinkedListNode<T> {
         
         if (this.#currentSize >= this.#options.maxSize) {
@@ -110,7 +115,10 @@ export class DoublyLinkedList<T> {
 
         return newNode;
     }
-
+    
+    // To allow bi-directional inserts and random access pattern, this function was created. 
+    // It allows insertion after the node passed in params.
+    // It returns the newly added node
     insertAfter(node: DoublyLinkedListNode<T>, value: T): DoublyLinkedListNode<T> {
         
         if (this.#currentSize >= this.#options.maxSize) {
@@ -148,6 +156,9 @@ export class DoublyLinkedList<T> {
         return newNode;
     }
 
+    // To allow bi-directional deletions and random access pattern, this function was created.
+    // It takes a node and can unlink that specific node from the DLL.
+    // It returns a standalone node after removal.
     unlinkNode(node: DoublyLinkedListNode<T>): DoublyLinkedListNode<T> {
 
         if (this.#tail.getPrev() === this.#head || this.#head.getNext() === this.#tail) {
@@ -219,5 +230,29 @@ export class DoublyLinkedList<T> {
         this.#head.setNext(this.#tail, this);
         this.#tail.setPrev(this.#head, this);
         this.#currentSize = 0;
+    }
+
+    *[Symbol.iterator]() {
+        if (this.#head.getNext() === this.#tail) {
+            yield null;
+        } else {
+            for (let node = this.#head.getNext(); node !== this.#tail; node = node?.getNext()!) {
+                yield node;
+            }
+        }
+    }
+    
+    *reverse() {
+        if (this.#tail.getPrev() === this.#head) {
+            yield null;
+        } else {
+            for (let node = this.#tail.getPrev(); node !== this.#head; node = node?.getPrev()!) {
+                yield node;
+            }
+        }
+    }
+
+    reverseInPlace(): void {
+
     }
 }

@@ -1,174 +1,172 @@
-// Space Complexity: 
-
 import { MAX_SIZE } from "../../constants";
+import { DoublyLinkedList, DoublyLinkedListNode, DoublyLinkedListOptions } from "./doubly-linked-list";
 
+// Space Complexity: 
 // Time Complexity: 
-export class SinglyLinkedListNode<T> {
-    public data: T;
-    public next: SinglyLinkedListNode<T> | null;
+const DLL_OWNER = Symbol('DLL_OWNER');
 
-    constructor(data: T) {
+// This interface is exported to allow users to set types in their code explicitly if needed.
+export interface SinglyLinkedListNode<T> {
+    readonly data: T | null;
+    getNext(): SinglyLinkedListNode<T> | null;
+}
+
+// This class is hidden to avoid new nodes being created outside the scope of the SLL. 
+// Nodes can only be created by the SLL and it's methods.
+class InternalSinglyLinkedListNode<T> implements SinglyLinkedListNode<T> {
+    private readonly [DLL_OWNER]: SinglyLinkedList<T>;
+
+    public data: T | null;
+    #next: InternalSinglyLinkedListNode<T> | null = null;
+
+    constructor(data: T | null, owner: SinglyLinkedList<T>) {
         this.data = data;
-        this.next = null;
+        this[DLL_OWNER] = owner;
+    }
+
+    getNext(): InternalSinglyLinkedListNode<T> | null {
+        return this.#next;
+    }
+
+    setNext(node: InternalSinglyLinkedListNode<T> | null, owner: SinglyLinkedList<T>): InternalSinglyLinkedListNode<T> {
+        if (this[DLL_OWNER] !== owner) {
+            throw new Error('Cannot mutate node\'s internal properties');
+        }
+        
+        this.#next = node;
+        return this;
     }
 }
 
+export type SinglyLinkedListOptions = {
+    maxSize: number;
+}
+
 export class SinglyLinkedList<T> {
-    private head: SinglyLinkedListNode<T> | null;
-    private currentSize: number;
-    private maxSize: number;
+    #head: InternalSinglyLinkedListNode<T>;
+    #options: SinglyLinkedListOptions;
+    #currentSize: number;
 
-    constructor(maxSize?: number) {
-        this.head = null;
-        this.currentSize = 0;
-        this.maxSize = maxSize ?? MAX_SIZE;
+    constructor(ops?: SinglyLinkedListOptions) {
+        if (ops?.maxSize && ops?.maxSize <= 0) throw new Error('Max size must be greater than 0')
+        
+            this.#head = new InternalSinglyLinkedListNode<T>(null, this);
+        this.#head.setNext(null, this);
+        this.#options = {
+            maxSize: ops?.maxSize ?? MAX_SIZE
+        };
+        this.#currentSize = 0;
     }
 
-    private findNodeByIndex(index: number): SinglyLinkedListNode<T> {
-        let currentNode = this.head;
-        for (let currentPosition = 0; currentPosition <= index; currentPosition++) {
-            currentNode = currentNode!.next;
+    // Since SLL are unidirectional, this function was created to allow random access insertion in SLL.
+    // The parentNode must be passed to allow addition after given node.
+    insertAfterNode(parentNode: SinglyLinkedListNode<T>, value: T | null): SinglyLinkedListNode<T> {
+        
+        if (this.#currentSize >= this.#options.maxSize) {
+            throw new Error('Overflow!')
         }
-        return currentNode!;
-    }
+        
+        const internalNode = parentNode as InternalSinglyLinkedListNode<T>;
 
-    public appendAtStart(data: T): void {
-        this.append(data, 0);
-    }
-
-    public appendAtEnd(data: T): void {
-        this.append(data, this.size() - 1);
-    }
-
-    public appendAtPosition(data: T, index: number): void {
-        this.append(data, index);
-    }
-
-    public removeAtStart(): T {
-        return this.remove(0);
-    }
-
-    public removeAtEnd(): T {
-        return this.remove(this.size() - 1);
-    }
-
-    public removeAtPosition(index: number): T {
-        return this.remove(index);
-    }
-
-    public append(data: T, index: number): void {
-        if (this.isFull()) throw new Error('Singly Linked List Overflow');
-
-        const newNode = new SinglyLinkedListNode<T>(data);
-        if (!this.head) {
-            this.head = newNode;
-        } else if (index === 0) {
-            // Insert at start
-            newNode.next = this.head;
-            this.head = newNode;
-        } else if (index === this.size() - 1){
-            // Insert at end
-            let currentNode = this.head;
-            while (currentNode.next) {
-                currentNode = currentNode.next;
-            }
-            currentNode.next = newNode;
-        } else {
-            // Insert at index
-            if (index < 0 || index >= this.size()) throw new Error('Index out of bounds')
-            
-            const previousNode = this.findNodeByIndex(index - 1);
-            newNode.next = previousNode.next;
-            previousNode.next = newNode;
-            
+        if (internalNode[DLL_OWNER] !== this) {
+            throw new Error('Node does not belong to this list');
         }
 
-        this.currentSize++;
+        const newNode = new InternalSinglyLinkedListNode<T>(value, this);
+
+        const nextConnectedNode = internalNode.getNext();
+        internalNode.setNext(newNode, this);
+
+        newNode.setNext(nextConnectedNode, this);
+        
+        this.#currentSize += 1;
+
+        return newNode;
     }
 
-    public remove(index: number): T {
-        if (this.isEmpty()) throw new Error('Singly Linked List Underflow');
+    // Since SLL are unidirectional, this function was created to allow random access deletion in SLL.
+    // The parentNode must be passed to allow deletion after given node.
+    // This is by design, if this function were to unlink the parentNode itself, it must have access to it's prev element. 
+    // This makes it a DLL, hence stuck with this pattern 
+    unlinkAfterNode(parentNode: SinglyLinkedListNode<T>): SinglyLinkedListNode<T> {
 
-        let poppedValue: T;
-        if (index === 0 || this.size() === 1) {
-            // Delete at start
-            poppedValue = this.head!.data;
-            this.head = this.head!.next;
-        } else if (index === this.size() - 1) {
-            // Delete at end
-            let currentNode: SinglyLinkedListNode<T> | null = this.head;
-            let previousNode: SinglyLinkedListNode<T> | null = this.head;
-            while (currentNode!.next) {
-                previousNode = currentNode;
-                currentNode = currentNode!.next;
-            }
-            previousNode!.next = null;
-            poppedValue = currentNode!.data;
-        } else {
-            // Delete at index
-            if (index < 0 || index >= this.size()) throw new Error('Index out of bounds')
-            
-            const previousNode = this.findNodeByIndex(index - 1);
-            poppedValue = previousNode.next!.data;
-            previousNode.next = previousNode.next!.next;
+        if (this.#head.getNext() === null) {
+            throw new Error('Underflow!')
         }
-        this.currentSize--;
-        return poppedValue;
-    }
+        
+        const internalNode = parentNode as InternalSinglyLinkedListNode<T>;
 
-    public peek(index: number): T {
-        if (this.isEmpty()) throw new Error('Singly Linked List Underflow');
-
-        if (index === 0) {
-            // Peek the start value.
-            return this.head!.data;
-        } else if (index === this.size() - 1){
-            // Peek the end value.
-            let currentNode = this.head;
-            while (currentNode!.next) {
-                currentNode = currentNode!.next;
-            }
-            return currentNode!.data;
-        } else {
-            // Peek at index
-            if (index < 0 || index >= this.size()) throw new Error('Index out of bounds')
-            return this.findNodeByIndex(index).data;
-        }
-    }
-
-    public print(): void {
-        if (this.isEmpty()) throw new Error('Singly Linked List Underflow');
-        let currentNode = this.head;
-
-        const valuesArr: Array<T> = [currentNode!.data];
-
-        while(currentNode!.next) {
-            valuesArr.push(currentNode!.data);
-            currentNode = currentNode!.next;
+        if (internalNode[DLL_OWNER] !== this) {
+            throw new Error('Node does not belong to this list');
         }
 
-        console.log('Singly Linked List Values: ', valuesArr);
+        if (!internalNode.getNext()) {
+            throw new Error('Cannot unlink sentinel or detached node');
+        }
+        
+        const nodeNext = internalNode.getNext();
+
+        if (nodeNext) {
+            internalNode.setNext(nodeNext.getNext(), this);
+            nodeNext.setNext(null, this);
+        }
+
+        this.#currentSize -= 1;
+
+        return nodeNext as SinglyLinkedListNode<T>;
+
     }
 
-    public size(): number {
-        return this.currentSize;
+    pushAfterHead(value: T): SinglyLinkedListNode<T> {
+        return this.insertAfterNode(this.#head, value);
     }
 
-    public isEmpty(): boolean {
-        return this.size() === 0;
+    popAfterHead(): SinglyLinkedListNode<T> {
+        return this.unlinkAfterNode(this.#head.getNext()!);
     }
 
-    public isFull(): boolean {
-        return this.size() >= this.maxSize;
+    peekAfterHead(): SinglyLinkedListNode<T> {
+        return this.#head.getNext() as SinglyLinkedListNode<T>;
     }
 
-    public clear(): void {
-        this.head = null;
+    getSize(): number {
+        return this.#currentSize;
+    }
+
+    getOptions(): DoublyLinkedListOptions {
+        return this.#options;
+    }
+    
+    clear() {
+        this.#head = new InternalSinglyLinkedListNode<T>(null, this);
+        this.#head.setNext(null, this);
+        this.#currentSize = 0;
     }
 
     *[Symbol.iterator]() {
-        for (let node = this.head; node; node = node.next) {
-            yield node;
+        if (this.#head.getNext() === null) {
+            yield null;
+        } else {
+            for (let node = this.#head.getNext(); node !== null; node = node?.getNext()!) {
+                yield node;
+            }
+        }
+    }
+    
+    *reverse() {
+        if (this.#head.getNext() === null) {
+            yield null;
+        } else {
+            let newHead: InternalSinglyLinkedListNode<T> | null = null;
+            for (let node = this.#head.getNext(); node !== null; node = node?.getNext()!) {
+                const newNode = new InternalSinglyLinkedListNode<T>(node.data, this);
+                newNode.setNext(newHead, this);
+                newHead = newNode;
+            }
+
+            for (let node = newHead; node !== null; node = node?.getNext()) {
+                yield node;
+            }
         }
     }
 }
