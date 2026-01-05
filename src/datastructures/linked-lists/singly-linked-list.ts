@@ -1,10 +1,9 @@
-import { MAX_SIZE } from "../../constants";
-import { DoublyLinkedList, DoublyLinkedListNode, DoublyLinkedListOptions } from "./doubly-linked-list";
+import { MAX_SIZE } from "../../constants/external";
+import { generateOwner } from "../../constants/internal";
+import { DoublyLinkedListOptions } from "./doubly-linked-list";
 
 // Space Complexity: 
 // Time Complexity: 
-const DLL_OWNER = Symbol('DLL_OWNER');
-
 // This interface is exported to allow users to set types in their code explicitly if needed.
 export interface SinglyLinkedListNode<T> {
     readonly data: T | null;
@@ -14,27 +13,30 @@ export interface SinglyLinkedListNode<T> {
 // This class is hidden to avoid new nodes being created outside the scope of the SLL. 
 // Nodes can only be created by the SLL and it's methods.
 class InternalSinglyLinkedListNode<T> implements SinglyLinkedListNode<T> {
-    private readonly [DLL_OWNER]: SinglyLinkedList<T>;
-
     public data: T | null;
     #next: InternalSinglyLinkedListNode<T> | null = null;
+    #owner: symbol;
 
-    constructor(data: T | null, owner: SinglyLinkedList<T>) {
+    constructor(data: T | null, owner: symbol) {
         this.data = data;
-        this[DLL_OWNER] = owner;
+        this.#owner = owner;
     }
 
     getNext(): InternalSinglyLinkedListNode<T> | null {
         return this.#next;
     }
 
-    setNext(node: InternalSinglyLinkedListNode<T> | null, owner: SinglyLinkedList<T>): InternalSinglyLinkedListNode<T> {
-        if (this[DLL_OWNER] !== owner) {
+    setNext(node: InternalSinglyLinkedListNode<T> | null, owner: symbol): InternalSinglyLinkedListNode<T> {
+        if (!this.validateOwner(owner)) {
             throw new Error('Cannot mutate node\'s internal properties');
         }
         
         this.#next = node;
         return this;
+    }
+
+    validateOwner(owner: symbol) {
+        return this.#owner === owner;
     }
 }
 
@@ -46,12 +48,14 @@ export class SinglyLinkedList<T> {
     #head: InternalSinglyLinkedListNode<T>;
     #options: SinglyLinkedListOptions;
     #currentSize: number;
+    #owner: symbol;
 
     constructor(ops?: SinglyLinkedListOptions) {
         if (ops?.maxSize && ops?.maxSize <= 0) throw new Error('Max size must be greater than 0')
         
-            this.#head = new InternalSinglyLinkedListNode<T>(null, this);
-        this.#head.setNext(null, this);
+        this.#owner = generateOwner("SLL_OWNER");
+        this.#head = new InternalSinglyLinkedListNode<T>(null, this.#owner);
+        this.#head.setNext(null, this.#owner);
         this.#options = {
             maxSize: ops?.maxSize ?? MAX_SIZE
         };
@@ -68,16 +72,18 @@ export class SinglyLinkedList<T> {
         
         const internalNode = parentNode as InternalSinglyLinkedListNode<T>;
 
-        if (internalNode[DLL_OWNER] !== this) {
+        const canProceed = internalNode.validateOwner(this.#owner);
+
+        if (!canProceed) {
             throw new Error('Node does not belong to this list');
         }
 
-        const newNode = new InternalSinglyLinkedListNode<T>(value, this);
+        const newNode = new InternalSinglyLinkedListNode<T>(value, this.#owner);
 
         const nextConnectedNode = internalNode.getNext();
-        internalNode.setNext(newNode, this);
+        internalNode.setNext(newNode, this.#owner);
 
-        newNode.setNext(nextConnectedNode, this);
+        newNode.setNext(nextConnectedNode, this.#owner);
         
         this.#currentSize += 1;
 
@@ -87,7 +93,7 @@ export class SinglyLinkedList<T> {
     // Since SLL are unidirectional, this function was created to allow random access deletion in SLL.
     // The parentNode must be passed to allow deletion after given node.
     // This is by design, if this function were to unlink the parentNode itself, it must have access to it's prev element. 
-    // This makes it a DLL, hence stuck with this pattern 
+    // This makes it a DLL, hence stuck with this pattern.
     unlinkAfterNode(parentNode: SinglyLinkedListNode<T>): SinglyLinkedListNode<T> {
 
         if (this.#head.getNext() === null) {
@@ -96,7 +102,9 @@ export class SinglyLinkedList<T> {
         
         const internalNode = parentNode as InternalSinglyLinkedListNode<T>;
 
-        if (internalNode[DLL_OWNER] !== this) {
+        const canProceed = internalNode.validateOwner(this.#owner);
+
+        if (!canProceed) {
             throw new Error('Node does not belong to this list');
         }
 
@@ -107,8 +115,8 @@ export class SinglyLinkedList<T> {
         const nodeNext = internalNode.getNext();
 
         if (nodeNext) {
-            internalNode.setNext(nodeNext.getNext(), this);
-            nodeNext.setNext(null, this);
+            internalNode.setNext(nodeNext.getNext(), this.#owner);
+            nodeNext.setNext(null, this.#owner);
         }
 
         this.#currentSize -= 1;
@@ -138,8 +146,8 @@ export class SinglyLinkedList<T> {
     }
     
     clear() {
-        this.#head = new InternalSinglyLinkedListNode<T>(null, this);
-        this.#head.setNext(null, this);
+        this.#head = new InternalSinglyLinkedListNode<T>(null, this.#owner);
+        this.#head.setNext(null, this.#owner);
         this.#currentSize = 0;
     }
 
@@ -159,8 +167,8 @@ export class SinglyLinkedList<T> {
         } else {
             let newHead: InternalSinglyLinkedListNode<T> | null = null;
             for (let node = this.#head.getNext(); node !== null; node = node?.getNext()!) {
-                const newNode = new InternalSinglyLinkedListNode<T>(node.data, this);
-                newNode.setNext(newHead, this);
+                const newNode = new InternalSinglyLinkedListNode<T>(node.data, this.#owner);
+                newNode.setNext(newHead, this.#owner);
                 newHead = newNode;
             }
 

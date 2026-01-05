@@ -1,4 +1,5 @@
-import { MAX_SIZE } from '../../constants';
+import { MAX_SIZE } from '../../constants/external';
+import { generateOwner } from '../../constants/internal';
 
 // Space Complexity: 
 // Time Complexity: 
@@ -32,7 +33,7 @@ class InternalDoublyLinkedListNode<T> implements DoublyLinkedListNode<T> {
     }
 
     setNext(node: InternalDoublyLinkedListNode<T> | null, owner: symbol): InternalDoublyLinkedListNode<T> {
-        if (this.#owner !== owner) {
+        if (!this.validateOwner(owner)) {
             throw new Error('Cannot mutate node\'s internal properties');
         }
         
@@ -41,7 +42,7 @@ class InternalDoublyLinkedListNode<T> implements DoublyLinkedListNode<T> {
     }
 
     setPrev(node: InternalDoublyLinkedListNode<T> | null, owner: symbol): InternalDoublyLinkedListNode<T> {
-        if (this.#owner !== owner) {
+        if (!this.validateOwner(owner)) {
             throw new Error('Cannot mutate node\'s internal properties');
         }
         
@@ -68,7 +69,7 @@ export class DoublyLinkedList<T> {
     constructor(ops?: DoublyLinkedListOptions) {
         if (ops?.maxSize && ops?.maxSize <= 0) throw new Error('Max size must be greater than 0')
         
-        this.#owner = Symbol(Date.now());
+        this.#owner = generateOwner("DLL_OWNER");
         this.#head = new InternalDoublyLinkedListNode<T>(null, this.#owner);
         this.#tail = new InternalDoublyLinkedListNode<T>(null, this.#owner);
         this.#head.setNext(this.#tail, this.#owner);

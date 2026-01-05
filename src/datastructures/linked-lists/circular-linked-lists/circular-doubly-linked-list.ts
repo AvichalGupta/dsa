@@ -1,6 +1,6 @@
 // Space Complexity: 
 
-import { MAX_SIZE } from "../../../constants";
+import { MAX_SIZE } from "../../../constants/external";
 
 // Time Complexity: 
 export class CircularDoublyLinkedListNode<T> {
