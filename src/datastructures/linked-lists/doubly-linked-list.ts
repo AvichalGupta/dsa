@@ -88,6 +88,10 @@ export class DoublyLinkedList<T> {
         if (this.#currentSize >= this.#options.maxSize) {
             throw new Error('Overflow!')
         }
+
+        if (!(node instanceof InternalDoublyLinkedListNode)) {
+            throw new Error('Artificial Node detected')
+        }
         
         const internalNode = node as InternalDoublyLinkedListNode<T>;
 
@@ -127,9 +131,13 @@ export class DoublyLinkedList<T> {
     // It allows insertion after the node passed in params.
     // It returns the newly added node
     insertAfter(node: DoublyLinkedListNode<T>, value: T): DoublyLinkedListNode<T> {
-        
+
         if (this.#currentSize >= this.#options.maxSize) {
             throw new Error('Overflow!')
+        }
+
+        if (!(node instanceof InternalDoublyLinkedListNode)) {
+            throw new Error('Artificial Node detected')
         }
         
         const internalNode = node as InternalDoublyLinkedListNode<T>;
@@ -172,6 +180,10 @@ export class DoublyLinkedList<T> {
 
         if (this.#tail.getPrev() === this.#head || this.#head.getNext() === this.#tail) {
             throw new Error('Underflow!')
+        }
+
+        if (!(node instanceof InternalDoublyLinkedListNode)) {
+            throw new Error('Artificial Node detected')
         }
         
         const internalNode = node as InternalDoublyLinkedListNode<T>;
@@ -245,7 +257,7 @@ export class DoublyLinkedList<T> {
 
     *[Symbol.iterator]() {
         if (this.#head.getNext() === this.#tail) {
-            yield null;
+            return;
         } else {
             for (let node = this.#head.getNext(); node !== this.#tail; node = node?.getNext()!) {
                 yield node;
@@ -255,15 +267,11 @@ export class DoublyLinkedList<T> {
     
     *reverse() {
         if (this.#tail.getPrev() === this.#head) {
-            yield null;
+            return;
         } else {
             for (let node = this.#tail.getPrev(); node !== this.#head; node = node?.getPrev()!) {
                 yield node;
             }
         }
-    }
-
-    reverseInPlace(): void {
-
     }
 }

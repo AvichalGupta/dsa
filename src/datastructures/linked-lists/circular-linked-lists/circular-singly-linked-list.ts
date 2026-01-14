@@ -1,191 +1,217 @@
-// Space Complexity: 
-
 import { MAX_SIZE } from "../../../constants/external";
+import { generateOwner } from "../../../constants/internal";
 
+// Space Complexity: 
 // Time Complexity: 
-export class CircularSinglyLinkedListNode<T> {
-    public data: T;
-    public next: CircularSinglyLinkedListNode<T> | null;
+// This interface is exported to allow users to set types in their code explicitly if needed.
+export interface CircularSinglyLinkedListNode<T> {
+    readonly data: T | null;
+    getNext(): CircularSinglyLinkedListNode<T> | null;
+}
 
-    constructor(data: T) {
+// This class is hidden to avoid new nodes being created outside the scope of the SLL. 
+// Nodes can only be created by the SLL and it's methods.
+class InternalCircularSinglyLinkedListNode<T> implements CircularSinglyLinkedListNode<T> {
+    public data: T | null;
+    #next: InternalCircularSinglyLinkedListNode<T> | null = null;
+    #owner: symbol;
+
+    constructor(data: T | null, owner: symbol) {
         this.data = data;
-        this.next = null;
+        this.#owner = owner;
+    }
+
+    getNext(): InternalCircularSinglyLinkedListNode<T> | null {
+        return this.#next;
+    }
+
+    setNext(node: InternalCircularSinglyLinkedListNode<T> | null, owner: symbol): InternalCircularSinglyLinkedListNode<T> {
+        if (!this.validateOwner(owner)) {
+            throw new Error('Cannot mutate node\'s internal properties');
+        }
+        
+        this.#next = node;
+        return this;
+    }
+
+    validateOwner(owner: symbol) {
+        return this.#owner === owner;
     }
 }
 
+export type CircularSinglyLinkedListOptions = {
+    maxSize: number;
+}
+
 export class CircularSinglyLinkedList<T> {
-    private head: CircularSinglyLinkedListNode<T> | null;
-    private currentSize: number;
-    private maxSize: number;
+    #head: InternalCircularSinglyLinkedListNode<T>;
+    #tail: InternalCircularSinglyLinkedListNode<T>;
+    #options: CircularSinglyLinkedListOptions;
+    #currentSize: number;
+    #owner: symbol;
 
-    constructor(maxSize?: number) {
-        this.head = null;
-        this.currentSize = 0;
-        this.maxSize = maxSize || MAX_SIZE;
+    constructor(ops?: CircularSinglyLinkedListOptions) {
+        if (ops?.maxSize && ops?.maxSize <= 0) throw new Error('Max size must be greater than 0')
+        
+        this.#owner = generateOwner("SLL_OWNER");
+        this.#head = new InternalCircularSinglyLinkedListNode<T>(null, this.#owner);
+        this.#tail = new InternalCircularSinglyLinkedListNode<T>(null, this.#owner);
+        this.#head.setNext(this.#tail, this.#owner);
+        this.#tail.setNext(this.#head, this.#owner);
+        this.#options = {
+            maxSize: ops?.maxSize ?? MAX_SIZE
+        };
+        this.#currentSize = 0;
     }
 
-    private findNodeByIndex(index: number): CircularSinglyLinkedListNode<T> {
-        let currentNode = this.head;
-        for (let currentPosition = 0; currentPosition <= index; currentPosition++) {
-            currentNode = currentNode!.next;
+    // Since SLL are unidirectional, this function was created to allow random access insertion in SLL.
+    insertAfterNode(node: CircularSinglyLinkedListNode<T>, value: T | null): CircularSinglyLinkedListNode<T> {
+        
+        if (this.#currentSize >= this.#options.maxSize) {
+            throw new Error('Overflow!')
         }
-        return currentNode!;
+
+        if (!(node instanceof InternalCircularSinglyLinkedListNode)) {
+            throw new Error('Artificial Node detected')
+        }
+        
+        const internalNode = node as InternalCircularSinglyLinkedListNode<T>;
+
+        const canProceed = internalNode.validateOwner(this.#owner);
+
+        if (!canProceed) {
+            throw new Error('Node does not belong to this list');
+        }
+
+        if (internalNode === this.#tail) {
+            throw new Error('Cannot insert after tail');
+        }
+
+        const newNode = new InternalCircularSinglyLinkedListNode<T>(value, this.#owner);
+
+        const nextConnectedNode = internalNode.getNext();
+        newNode.setNext(nextConnectedNode, this.#owner);
+        internalNode.setNext(newNode, this.#owner);
+
+        this.#currentSize += 1;
+
+        return newNode;
     }
 
-    public appendAtStart(data: T): void {
-        this.append(data, 0);
+    // Since SLL are unidirectional, this function was created to allow random access deletion in SLL.
+    // The parentNode must be passed to allow deletion after given node.
+    // This is by design, if this function were to unlink the parentNode itself, it must have access to it's prev element. 
+    // This makes it a DLL, hence stuck with this pattern.
+    unlinkAfterNode(parentNode: CircularSinglyLinkedListNode<T>): CircularSinglyLinkedListNode<T> {
+
+        if (this.#head.getNext() === this.#tail) {
+            throw new Error('Underflow!')
+        }
+
+        if (!(parentNode instanceof InternalCircularSinglyLinkedListNode)) {
+            throw new Error('Artificial Node detected')
+        }
+        
+        const internalNode = parentNode as InternalCircularSinglyLinkedListNode<T>;
+
+        const canProceed = internalNode.validateOwner(this.#owner);
+
+        if (!canProceed) {
+            throw new Error('Node does not belong to this list');
+        }
+
+        if (!internalNode.getNext()) {
+            throw new Error('Cannot unlink sentinel or detached node');
+        }
+        
+        const nodeNext = internalNode.getNext();
+
+        if (nodeNext) {
+            internalNode.setNext(nodeNext.getNext(), this.#owner);
+            nodeNext.setNext(null, this.#owner);
+        }
+
+        this.#currentSize -= 1;
+
+        return nodeNext as CircularSinglyLinkedListNode<T>;
+
     }
 
-    public appendAtEnd(data: T): void {
-        this.append(data, this.size() - 1);
+    pushAfterHead(value: T | null): CircularSinglyLinkedListNode<T> {
+        return this.insertAfterNode(this.#head, value);
     }
 
-    public appendAtPosition(data: T, index: number): void {
-        this.append(data, index);
+    popAfterHead(): CircularSinglyLinkedListNode<T> {
+        return this.unlinkAfterNode(this.#head.getNext()!);
     }
 
-    public removeAtStart(): T {
-        return this.remove(0);
+    peekAfterHead(): CircularSinglyLinkedListNode<T> {
+        return this.#head.getNext() as CircularSinglyLinkedListNode<T>;
     }
 
-    public removeAtEnd(): T {
-        return this.remove(this.size() - 1);
-    }
-
-    public removeAtPosition(index: number): T {
-        return this.remove(index);
-    }
-
-    public append(data: T, index: number): void {
-        if (this.isFull()) throw new Error('Singly Linked List Overflow');
-
-        const newNode = new CircularSinglyLinkedListNode<T>(data);
-        if (!this.head) {
-            this.head = newNode;
-            newNode.next = this.head;
-        } else if (index === 0) {
-            // Insert at start
-            newNode.next = this.head;
-            this.head.next = newNode;
-        } else if (index === this.size() - 1){
-            // Insert at end
-            let currentNode: CircularSinglyLinkedListNode<T> | null = this.head;
-            while (currentNode!.next != this.head) {
-                currentNode = currentNode!.next;
+    findParent(node: CircularSinglyLinkedListNode<T>): CircularSinglyLinkedListNode<T> | null {
+        let currentNode: CircularSinglyLinkedListNode<T> | null = this.#head;
+        while (currentNode) {
+            if (currentNode.getNext() === node) {
+                return currentNode ?? null;
             }
-            currentNode!.next = newNode;
-            newNode.next = this.head;
-        } else {
-            // Insert at index
-            if (index < 0 || index >= this.size()) throw new Error('Index out of bounds')
-            
-            const previousNode = this.findNodeByIndex(index - 1);
-            newNode.next = previousNode.next;
-            previousNode.next = newNode;
-            
+            currentNode = currentNode.getNext();
         }
-
-        this.currentSize = (this.currentSize + 1) % this.maxSize;
+        return null;
     }
 
-    public remove(index: number): T {
-        if (this.isEmpty()) throw new Error('Singly Linked List Underflow');
-
-        let poppedValue: T;
-        if (index === 0) {
-            poppedValue = this.head!.data;
-            if (this.size() === 1) {
-                this.head = null;
-            } else {
-                // Delete at start
-                let currentNode = this.head;
-                while (currentNode!.next != this.head) {
-                    currentNode = currentNode!.next;
-                }
-
-                currentNode!.next = this.head!.next;
-                this.head = this.head!.next;
-
-            }
-        } else if (index === this.size() - 1) {
-            if (this.size() === 1) {
-                poppedValue = this.head!.data;
-                this.head = null;
-            } else {
-                // Delete at end
-                let currentNode: CircularSinglyLinkedListNode<T> | null = this.head;
-                let previousNode: CircularSinglyLinkedListNode<T> | null = this.head;
-                while (currentNode!.next != this.head) {
-                    previousNode = currentNode;
-                    currentNode = currentNode!.next;
-                }
-                previousNode!.next = this.head;
-                poppedValue = currentNode!.data;
-            }
-        } else {
-            // Delete at index
-            if (index < 0 || index >= this.size()) throw new Error('Index out of bounds')
-            
-            const previousNode = this.findNodeByIndex(index - 1);
-            poppedValue = previousNode.next!.data;
-            previousNode.next = previousNode.next!.next;
-        }
-        this.currentSize--;
-        return poppedValue;
+    getSize(): number {
+        return this.#currentSize;
     }
 
-    public peek(index: number): T {
-        if (this.isEmpty()) throw new Error('Singly Linked List Underflow');
-
-        if (index === 0) {
-            // Peek the start value.
-            return this.head!.data;
-        } else if (index === this.size() - 1){
-            // Peek the end value.
-            let currentNode = this.head;
-            while (currentNode!.next != this.head) {
-                currentNode = currentNode!.next;
-            }
-            return currentNode!.data;
-        } else {
-            // Peek at index
-            if (index < 0 || index >= this.size()) throw new Error('Index out of bounds')
-            return this.findNodeByIndex(index).data;
-        }
+    getOptions(): CircularSinglyLinkedListOptions {
+        return this.#options;
     }
 
-    public print(): void {
-        if (this.isEmpty()) throw new Error('Singly Linked List Underflow');
-        let currentNode = this.head;
-
-        const valuesArr: Array<T> = [currentNode!.data];
-
-        while(currentNode!.next) {
-            valuesArr.push(currentNode!.data);
-            currentNode = currentNode!.next;
-        }
-
-        console.log('Singly Linked List Values: ', valuesArr);
-    }
-
-    public size(): number {
-        return this.currentSize;
-    }
-
-    public isEmpty(): boolean {
-        return this.size() === 0;
-    }
-
-    public isFull(): boolean {
-        return this.size() >= this.maxSize;
-    }
-
-    public clear(): void {
-        this.head = null;
+    clear() {
+        this.#head = new InternalCircularSinglyLinkedListNode<T>(null, this.#owner);
+        this.#head.setNext(null, this.#owner);
+        this.#currentSize = 0;
     }
 
     *[Symbol.iterator]() {
-        for (let node = this.head; node; node = node.next) {
+        if (this.#head.getNext() === this.#tail) {
+            return;
+        }
+        
+        for (let node = this.#head.getNext(); node !== null; node = node.getNext()) {
+            if (node === this.#head || node === this.#tail) {
+                continue;
+            }
+            
+            yield node;
+        }
+    }
+    
+    *reverse() {
+        if (this.#head.getNext() === this.#tail) {
+            return;
+        }
+
+        let newHead: InternalCircularSinglyLinkedListNode<T> = new InternalCircularSinglyLinkedListNode<T>(null, this.#owner);
+        let newTail: InternalCircularSinglyLinkedListNode<T> = new InternalCircularSinglyLinkedListNode<T>(null, this.#owner);
+
+        outerLoop: for (let node: InternalCircularSinglyLinkedListNode<T> | null = this.#head.getNext(); node !== null; node = node.getNext()) {
+            const newNode = new InternalCircularSinglyLinkedListNode<T>(node.data, this.#owner);
+            newNode.setNext(node === this.#head.getNext() ? newTail : newHead, this.#owner);
+            newHead = newNode;
+            if (node === this.#tail) {
+                break outerLoop;
+            }
+        }
+
+        newTail.setNext(newHead, this.#owner);
+
+        for (let node: InternalCircularSinglyLinkedListNode<T> | null = newTail; node !== null; node = node.getNext()) {
+            if (node === newHead || node === newTail) {
+                continue;
+            }
+            
             yield node;
         }
     }

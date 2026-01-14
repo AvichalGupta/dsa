@@ -1,6 +1,5 @@
 import { MAX_SIZE } from "../../constants/external";
 import { generateOwner } from "../../constants/internal";
-import { DoublyLinkedListOptions } from "./doubly-linked-list";
 
 // Space Complexity: 
 // Time Complexity: 
@@ -63,14 +62,17 @@ export class SinglyLinkedList<T> {
     }
 
     // Since SLL are unidirectional, this function was created to allow random access insertion in SLL.
-    // The parentNode must be passed to allow addition after given node.
-    insertAfterNode(parentNode: SinglyLinkedListNode<T>, value: T | null): SinglyLinkedListNode<T> {
+    insertAfterNode(node: SinglyLinkedListNode<T>, value: T | null): SinglyLinkedListNode<T> {
         
         if (this.#currentSize >= this.#options.maxSize) {
             throw new Error('Overflow!')
         }
+
+        if (!(node instanceof InternalSinglyLinkedListNode)) {
+            throw new Error('Artificial Node detected')
+        }
         
-        const internalNode = parentNode as InternalSinglyLinkedListNode<T>;
+        const internalNode = node as InternalSinglyLinkedListNode<T>;
 
         const canProceed = internalNode.validateOwner(this.#owner);
 
@@ -81,10 +83,9 @@ export class SinglyLinkedList<T> {
         const newNode = new InternalSinglyLinkedListNode<T>(value, this.#owner);
 
         const nextConnectedNode = internalNode.getNext();
+        newNode.setNext(nextConnectedNode, this.#owner);
         internalNode.setNext(newNode, this.#owner);
 
-        newNode.setNext(nextConnectedNode, this.#owner);
-        
         this.#currentSize += 1;
 
         return newNode;
@@ -98,6 +99,10 @@ export class SinglyLinkedList<T> {
 
         if (this.#head.getNext() === null) {
             throw new Error('Underflow!')
+        }
+
+        if (!(parentNode instanceof InternalSinglyLinkedListNode)) {
+            throw new Error('Artificial Node detected')
         }
         
         const internalNode = parentNode as InternalSinglyLinkedListNode<T>;
@@ -130,18 +135,29 @@ export class SinglyLinkedList<T> {
     }
 
     popAfterHead(): SinglyLinkedListNode<T> {
-        return this.unlinkAfterNode(this.#head.getNext()!);
+        return this.unlinkAfterNode(this.#head);
     }
 
     peekAfterHead(): SinglyLinkedListNode<T> {
         return this.#head.getNext() as SinglyLinkedListNode<T>;
     }
 
+    findParent(node: SinglyLinkedListNode<T>): SinglyLinkedListNode<T> | null {
+        let currentNode: SinglyLinkedListNode<T> | null = this.#head;
+        while (currentNode) {
+            if (currentNode.getNext() === node) {
+                return currentNode ?? null;
+            }
+            currentNode = currentNode.getNext();
+        }
+        return null;
+    }
+
     getSize(): number {
         return this.#currentSize;
     }
 
-    getOptions(): DoublyLinkedListOptions {
+    getOptions(): SinglyLinkedListOptions {
         return this.#options;
     }
     
@@ -153,28 +169,31 @@ export class SinglyLinkedList<T> {
 
     *[Symbol.iterator]() {
         if (this.#head.getNext() === null) {
-            yield null;
-        } else {
-            for (let node = this.#head.getNext(); node !== null; node = node?.getNext()!) {
-                yield node;
-            }
+            return;
+        }
+        
+        for (let node = this.#head.getNext(); node !== null; node = node.getNext()) {
+            yield node;
         }
     }
     
     *reverse() {
         if (this.#head.getNext() === null) {
-            yield null;
-        } else {
-            let newHead: InternalSinglyLinkedListNode<T> | null = null;
-            for (let node = this.#head.getNext(); node !== null; node = node?.getNext()!) {
-                const newNode = new InternalSinglyLinkedListNode<T>(node.data, this.#owner);
-                newNode.setNext(newHead, this.#owner);
-                newHead = newNode;
-            }
+            return;
+        }
+        
+        let prevNode: InternalSinglyLinkedListNode<T> | null = null;
+        let currentNode: InternalSinglyLinkedListNode<T> | null = this.#head.getNext();
 
-            for (let node = newHead; node !== null; node = node?.getNext()) {
-                yield node;
-            }
+        while (currentNode !== null) {
+            const next = currentNode.getNext();
+            currentNode.setNext(prevNode, this.#owner);
+            prevNode = currentNode;
+            currentNode = next;
+        }
+
+        for (let node = this.#head; node !== null; node = node.getNext()!) {
+            yield node;
         }
     }
 }
