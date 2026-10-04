@@ -5,3 +5,4 @@ export * from './priority-queues';
 export * from './queues';
 export * from './stacks';
 export * from './trees';
+export * from './buffers';

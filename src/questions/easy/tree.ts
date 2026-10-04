@@ -1,5 +1,5 @@
-import { Queue } from "../../datastructures/queues/queue";
-import { Stack } from "../../datastructures/stacks/stack";
+import { Queue } from "../../datastructures/queues/array-based-queue";
+import { Stack } from "../../datastructures/stacks/array-based-stack";
 import { LinkedListNode } from "../../datastructures/trees/binary-tree/linked-list-based-tree";
 import { LinkedListNode as NaryNode }from "../../datastructures/trees/n-ary-tree/linked-list-based-tree";
 import { executeNaryTree, executeTree, executeTreeFromEdges, executeNaryTreeFromEdges } from "../helper";

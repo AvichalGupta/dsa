@@ -1,4 +1,4 @@
-import { Queue } from "../../../../datastructures/queues/queue";
+import { Queue } from "../../../../datastructures/queues/array-based-queue";
 import { LinkedListNode } from "../../../../datastructures/trees/binary-tree/linked-list-based-tree";
 
 export function inOrderTraversal<T>(root: LinkedListNode<T>): T[] {

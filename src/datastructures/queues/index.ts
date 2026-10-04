@@ -1,2 +1,1 @@
-export { CircularQueue } from './circular-queue';
-export { Queue } from './queue';
+export { Queue } from './array-based-queue';

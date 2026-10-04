@@ -1,4 +1,4 @@
-import { Stack } from "../../datastructures/stacks/stack";
+import { Stack } from "../../datastructures/stacks/array-based-stack";
 import { execute } from "../helper";
 
 // 2467. Most Profitable Path in a Tree

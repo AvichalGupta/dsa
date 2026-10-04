@@ -1,4 +1,4 @@
-import { Queue } from "../../../../datastructures/queues/queue";
+import { Queue } from "../../../../datastructures/queues/array-based-queue";
 import { LinkedListNode } from "../../../../datastructures/trees/n-ary-tree/linked-list-based-tree";
 
 export function breadthFirstSearch<T>(root: LinkedListNode<T>): T[][] {    

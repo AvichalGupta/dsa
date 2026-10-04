@@ -1,6 +1,6 @@
 import { breadthFirstSearch } from "../algorithms/trees/traversal/binary/bfs";
 import { breadthFirstSearch as nAryBFS } from "../algorithms/trees/traversal/n-ary/bfs";
-import { Queue } from "../datastructures/queues/queue";
+import { Queue } from "../datastructures/queues/array-based-queue";
 import { LinkedListNode } from "../datastructures/trees/binary-tree/linked-list-based-tree";
 import { LinkedListNode as NaryNode } from "../datastructures/trees/n-ary-tree/linked-list-based-tree";
 

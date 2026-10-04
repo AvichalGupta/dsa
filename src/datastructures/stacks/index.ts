@@ -1,2 +1,1 @@
-export { Stack } from './stack';
-export { CircularStack } from './circular-stack';
+export { Stack } from './array-based-stack';

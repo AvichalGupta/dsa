@@ -1,4 +1,4 @@
-import { Stack } from "../../../datastructures/stacks/stack";
+import { Stack } from "../../../datastructures/stacks/array-based-stack";
 
 // Space Complexity: O(n(visited array) + n(queue) + n(bfsResult)) = O(n)
 // Time Complexity: O(N) + O(2E), queue time comp is O(n), childNodes for loop runs O(2 * number of edges) times. = O(Math.max(N, 2E))

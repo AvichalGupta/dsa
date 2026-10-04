@@ -1,4 +1,4 @@
-import { Stack } from "../../../../datastructures/stacks/stack";
+import { Stack } from "../../../../datastructures/stacks/array-based-stack";
 import { LinkedListNode } from "../../../../datastructures/trees/binary-tree/linked-list-based-tree";
 
 export function depthFirstSearch<T>(root: LinkedListNode<T>): T[] {
